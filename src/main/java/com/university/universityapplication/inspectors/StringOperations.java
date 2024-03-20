@@ -1,6 +1,6 @@
 package com.university.universityapplication.inspectors;
 
-import com.hibernate.hibernateapplication.constans.PostgreSqlSchema;
+import com.university.universityapplication.constans.PostgreSqlSchema;
 
 public class StringOperations extends CollectionsInspector {
     protected StringOperations () {}

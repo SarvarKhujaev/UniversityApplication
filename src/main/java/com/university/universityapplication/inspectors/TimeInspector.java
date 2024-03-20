@@ -8,4 +8,10 @@ public class TimeInspector extends StringOperations {
     protected Date newDate () {
         return new Date();
     }
+
+    protected Date newDate (
+            final long timeInterval
+    ) {
+        return new Date( timeInterval );
+    }
 }

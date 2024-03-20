@@ -1,9 +1,9 @@
 package com.university.universityapplication.inspectors;
 
-import com.hibernate.hibernateapplication.HibernateApplication;
-import com.hibernate.hibernateapplication.constans.PostgreSqlTables;
-import org.hibernate.cfg.Environment;
+import com.university.universityapplication.constans.PostgreSqlTables;
+import com.university.universityapplication.UniversityApplication;
 
+import org.hibernate.cfg.Environment;
 import java.util.Map;
 
 /*
@@ -31,7 +31,7 @@ public class Archive extends LogInspector {
 
         this.dbSettings.put(
                 Environment.URL,
-                HibernateApplication
+                UniversityApplication
                         .context
                         .getEnvironment()
                         .getProperty( "variables.HIBERNATE_VALUES.URL" )
@@ -39,7 +39,7 @@ public class Archive extends LogInspector {
 
         this.dbSettings.put(
                 Environment.USER,
-                HibernateApplication
+                UniversityApplication
                         .context
                         .getEnvironment()
                         .getProperty( "variables.HIBERNATE_VALUES.USER" )
@@ -47,7 +47,7 @@ public class Archive extends LogInspector {
 
         this.dbSettings.put(
                 Environment.PASS,
-                HibernateApplication
+                UniversityApplication
                         .context
                         .getEnvironment()
                         .getProperty( "variables.HIBERNATE_VALUES.PASSWORD" )

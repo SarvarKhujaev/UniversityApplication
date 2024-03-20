@@ -1,8 +1,8 @@
 package com.university.universityapplication.inspectors;
 
-import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.*;
 
 public class CollectionsInspector extends DataValidateInspector {
     protected CollectionsInspector () {}

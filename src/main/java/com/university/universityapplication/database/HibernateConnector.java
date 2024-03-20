@@ -1,29 +1,20 @@
 package com.university.universityapplication.database;
 
-import com.hibernate.hibernateapplication.constans.OrderStatus;
-import com.hibernate.hibernateapplication.constans.PostgreSqlTables;
-import com.hibernate.hibernateapplication.constans.hibernate.HibernateNativeNamedQueries;
-import com.hibernate.hibernateapplication.entities.*;
-import com.hibernate.hibernateapplication.inspectors.Archive;
-import com.hibernate.hibernateapplication.interfaces.ServiceCommonMethods;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.ParameterExpression;
-import jakarta.persistence.criteria.Root;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
-import org.hibernate.*;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
+import com.university.universityapplication.interfaces.ServiceCommonMethods;
+import com.university.universityapplication.constans.PostgreSqlTables;
+import com.university.universityapplication.inspectors.Archive;
+import com.university.universityapplication.entities.*;
+
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.query.Query;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.stat.CacheRegionStatistics;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.*;
+
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.Validation;
 
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.Set;
 
 public final class HibernateConnector extends Archive implements ServiceCommonMethods {
     public Session getSession() {
@@ -69,10 +60,12 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         подключаемся к самой БД
         */
         this.sessionFactory = new MetadataSources( this.getRegistry() )
-                .addAnnotatedClass( User.class )
-                .addAnnotatedClass( Order.class )
-                .addAnnotatedClass( Product.class )
+                .addAnnotatedClass( Group.class )
+                .addAnnotatedClass( Lesson.class )
+                .addAnnotatedClass( Teacher.class )
                 .addAnnotatedClass( Student.class )
+                .addAnnotatedClass( Comment.class )
+                .addAnnotatedClass( EducationDirection.class )
                 .getMetadataBuilder()
                 .build()
                 .getSessionFactoryBuilder()
@@ -91,9 +84,12 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         настраиваем Second Level Cache
         */
-        this.getSessionFactory().getCache().evictEntityData( User.class );
-        this.getSessionFactory().getCache().evictEntityData( Order.class );
-        this.getSessionFactory().getCache().evictEntityData( Product.class );
+        this.getSessionFactory().getCache().evictEntityData( Group.class );
+        this.getSessionFactory().getCache().evictEntityData( Lesson.class );
+        this.getSessionFactory().getCache().evictEntityData( Teacher.class );
+        this.getSessionFactory().getCache().evictEntityData( Student.class );
+        this.getSessionFactory().getCache().evictEntityData( Comment.class );
+        this.getSessionFactory().getCache().evictEntityData( EducationDirection.class );
 
         /*
         Hibernate specific JDBC batch size configuration on a per-Session basis
@@ -121,174 +117,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             this.getSession().flush();
             this.getSession().clear();
         }
-    }
-
-    public void save ( final Product object ) {
-        final Set< ConstraintViolation< Product > > violations = super.checkEntityValidation(
-                this.getValidatorFactory().getValidator(),
-                object
-        );
-
-        if ( !super.isCollectionNotEmpty( violations ) ) {
-            final Transaction transaction = this.newTransaction();
-
-            this.getSession().save( object );
-
-            transaction.commit();
-        } else {
-            super.analyze(
-                    violations,
-                    userConstraintViolation -> super.logging( userConstraintViolation.getMessage() )
-            );
-        }
-
-    }
-
-    public void save ( final User user ) {
-        final Set< ConstraintViolation< User > > violations = super.checkEntityValidation(
-                this.getValidatorFactory().getValidator(),
-                user
-        );
-
-        if ( !super.isCollectionNotEmpty( violations ) ) {
-            final Transaction transaction = this.newTransaction();
-
-            this.getSession().persist( user );
-
-            transaction.commit();
-        } else {
-            super.analyze(
-                    violations,
-                    userConstraintViolation -> super.logging( userConstraintViolation.getMessage() )
-            );
-        }
-    }
-
-    public void update ( final Order order ) {
-        final User user = this.getSession().get( User.class, 1L );
-
-        order.setUser( user );
-
-        final List< Product > products = this.getSession().createQuery(
-                """
-                FROM products
-                """
-        ).list();
-
-        order.setProductList( products );
-        order.initializeProductList();
-
-        final Transaction transaction = this.newTransaction();
-
-        this.getSession().persist( order );
-
-        transaction.commit();
-    }
-
-    public void update () {
-        final User user = this.getSession().get( User.class, 1L );
-
-        final Order order = this.getSession().get( Order.class, 1L );
-
-        user.removeNewOrder( order );
-
-        final Transaction transaction = this.newTransaction();
-
-        this.getSession().persist( user );
-
-        transaction.commit();
-    }
-
-    public void delete () {
-        final User user = this.getSession().get( User.class, 1L );
-
-        final Transaction transaction = this.newTransaction();
-
-        this.getSession().delete( user );
-
-        transaction.commit();
-
-        super.logging( transaction.getStatus() );
-    }
-
-    public void test () {
-        final Transaction transaction = this.newTransaction();
-
-        final ScrollableResults< Product > scrollableResults = this.getSession().createQuery(
-                        """
-                        FROM products
-                        """
-                ).setCacheMode( CacheMode.GET )
-                .scroll( ScrollMode.FORWARD_ONLY );
-
-        int operationsCounter = 0;
-
-        while ( scrollableResults.next() ) {
-            this.checkBatchLimit( ++operationsCounter );
-
-            super.logging( scrollableResults.get().getId() );
-        }
-
-        transaction.commit();
-        scrollableResults.close();
-    }
-
-    public void get () {
-        final Query< Order > orderQuery = this.getSession().createQuery(
-                "FROM orders WHERE user.id = :user_id ORDER BY createdDate",
-                Order.class
-        );
-
-        orderQuery.setFirstResult( 5 );
-        orderQuery.setMaxResults( 100 );
-
-        orderQuery.setCacheMode( CacheMode.GET );
-        orderQuery.setComment( "Select all orders for current user" );
-
-        orderQuery.setParameter( "user_id", 10 );
-
-        super.analyze(
-                orderQuery.getResultList(),
-                order -> super.logging( order.getId() )
-        );
-    }
-
-    public void getWithCriteria () {
-        final CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
-
-        final CriteriaQuery< Order > criteriaQuery = builder.createQuery( Order.class );
-
-        final Root< Order > root = criteriaQuery.from( Order.class );
-
-        /*
-        готовим параметры для запроса
-         */
-        final ParameterExpression< Long > idParam = builder.parameter( Long.class );
-        final ParameterExpression< OrderStatus > orderStatusParam = builder.parameter( OrderStatus.class );
-
-        criteriaQuery
-                .distinct( true )
-                .multiselect( root.get( "id" ), root.get( "orderStatus" ) )
-                .where(
-                        builder.or(
-                                builder.and(
-                                        root.get( "totalOrderSum" ).isNotNull(),
-                                        builder.equal( root.get( "id" ), idParam )
-                                ),
-                                builder.and(
-                                        builder.equal( root.get( "orderStatus" ), orderStatusParam )
-                                )
-                        )
-                );
-
-        super.analyze(
-                this.getSession()
-                        .createQuery( criteriaQuery )
-                        .setParameter( idParam, 5L )
-                        .setParameter( orderStatusParam, OrderStatus.CREATED )
-                        .getResultList(),
-                order -> super.logging( order.getCreatedDate().toString() )
-        );
     }
 
     public void getWithNativeQuery () {
@@ -321,143 +149,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         );
     }
 
-    public void joinExample () {
-        final NativeQuery< Order > nativeQuery = this.getSession().createNativeQuery(
-                """
-                SELECT {o.*}, {u.*}
-                FROM entities.orders o
-                JOIN entities.users u ON u.id = o.user_id;
-                """,
-                Order.class,
-                "o"
-        );
-
-        nativeQuery.addJoin( "u", "o.user" );
-
-        nativeQuery.setTupleTransformer( ( tuple, aliases ) -> (Order) tuple[0] );
-
-        super.analyze(
-                nativeQuery.list(),
-                order -> super.logging( order.getUser().getName() )
-        );
-    }
-
-    public void insertUsers () {
-        for ( int i = 0; i < 10; i++ ) {
-            final User user = new User();
-
-            user.setName( "test" );
-            user.setEmail( "sarvar@gmail.com" + i );
-            user.setSurname( "test" );
-            user.setPhoneNumber( "+99897" + i );
-
-            this.save( user );
-        }
-    }
-
-    public void insertProducts () {
-        for ( int i = 0; i < 10; i++ ) {
-            final Product product = new Product();
-
-            product.setProductName( "test" );
-            product.setDescription( "test" );
-
-            product.setPrice( i * 10000 + 1 );
-            product.setTotalCount( i * 10000 + 1 );
-
-            this.save( product );
-        }
-    }
-
-    public void insertOrders () {
-        final List< User > users = this.getSession().createQuery(
-                """
-                FROM USERS WHERE id IN ( 1, 2, 3, 4 )
-                """
-        ).getResultList();
-
-        final List< Product > products = this.getSession().createQuery(
-                """
-                FROM PRODUCTS WHERE id IN ( 2, 3, 4, 5, 6, 7 )
-                """
-        ).getResultList();
-
-        final Transaction transaction = this.newTransaction();
-
-        int operationsCounter = 0;
-
-        for ( final User user : users ) {
-            for ( int j = 0; j < 5; j++ ) {
-                final Order order = new Order();
-
-                order.setProductList( products );
-                order.initializeProductList();
-
-                user.addNewOrder( order );
-
-                this.checkBatchLimit( ++operationsCounter );
-
-                this.getSession().persist( order );
-
-                super.analyze(
-                        order.getProductList(),
-                        this.session::update
-                );
-            }
-        }
-
-        transaction.commit();
-
-        super.logging( transaction.getStatus() );
-    }
-
-    public void getUserOrders () {
-        final Transaction transaction = this.newTransaction();
-
-        final User user = this.getSession().get( User.class, 1L );
-
-        super.analyze(
-                user.getOrders(),
-                order -> super.logging( order.getId() + " : " + order.getProductList().size() )
-        );
-
-        transaction.commit();
-    }
-
-    public void checkNewNativeQuery () {
-        super.analyze(
-                this.getSession().createNamedQuery(
-                        HibernateNativeNamedQueries.PRODUCTS_GET_PRODUCT_WITH_RIGHT_STATUS_DUE_TO_COUNT,
-                        ProductDescription.class
-                ).setParameter( "order", "price DESC, createdDate ASC" )
-                        .setParameter( "limit", 30 )
-                        .setCacheable( true )
-                        .setCacheMode( CacheMode.GET )
-                        .setCacheRegion(
-                                super.generateCacheName( PostgreSqlTables.ORDERS )
-                        ).list(),
-
-                productDescription -> super.logging(
-                        productDescription.getId()
-                        + " : "
-                        + productDescription.getProductPriceSize()
-                )
-        );
-    }
-
-    public void getWithNaturalId () {
-        final Student student = this.getSession()
-                .byNaturalId( Student.class )
-                .using( "email", "sarvar@gmail.com" )
-                .load();
-
-        this.getSession().find(
-                Student.class, 1L
-        );
-
-        this.getSession().get( Student.class, 1L );
-    }
-
     /*
     If you enable the hibernate.generate_statistics configuration property,
     Hibernate will expose a number of metrics via SessionFactory.getStatistics().
@@ -471,7 +162,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 .getStatistics()
                 .getDomainDataRegionStatistics(
                         super.generateCacheName(
-                                PostgreSqlTables.ORDERS
+                                PostgreSqlTables.STUDENTS
                         )
                 );
 
