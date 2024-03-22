@@ -19,7 +19,19 @@ import jakarta.persistence.*;
         name = PostgreSqlTables.EDUCATION_DIRECTIONS,
         schema = PostgreSqlSchema.UNIVERSITY
 )
-public class EducationDirection {
+public final class EducationDirection {
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getDirectionName() {
+        return this.directionName;
+    }
+
+    public void setDirectionName ( final String directionName ) {
+        this.directionName = directionName;
+    }
+
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
@@ -34,9 +46,12 @@ public class EducationDirection {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Column(
             name = "direction_name",
+            unique = true,
             nullable = false,
             updatable = false,
-            columnDefinition = "VARCHAR( 50 ) NOT NULL"
+            columnDefinition = "VARCHAR( 50 )"
     )
     private String directionName;
+
+    public EducationDirection () {}
 }

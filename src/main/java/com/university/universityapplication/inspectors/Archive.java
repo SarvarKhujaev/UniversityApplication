@@ -1,6 +1,6 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.PostgreSqlTables;
+import com.university.universityapplication.constans.PostgreSqlSchema;
 import com.university.universityapplication.UniversityApplication;
 
 import org.hibernate.cfg.Environment;
@@ -102,7 +102,7 @@ public class Archive extends LogInspector {
         this.dbSettings.put(
                 Environment.USE_SECOND_LEVEL_CACHE,
                 super.generateCacheName(
-                        PostgreSqlTables.ORDERS
+                        PostgreSqlSchema.UNIVERSITY
                 )
         );
 

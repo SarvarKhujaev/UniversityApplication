@@ -26,7 +26,7 @@ import java.util.List;
 @Cache(
         usage = CacheConcurrencyStrategy.READ_WRITE
 )
-public class Student extends TimeInspector {
+public final class Student extends TimeInspector {
     public Long getId() {
         return this.id;
     }
@@ -132,19 +132,12 @@ public class Student extends TimeInspector {
     )
     private final Date createdDate = super.newDate(); // дата создания аккаунта
 
-    @Size(
-            min = 18,
-            max = 100,
-            message = ErrorMessages.VALUE_OUT_OF_RANGE
-    )
-    @Positive
     @NotNull( message = ErrorMessages.NULL_VALUE )
-    @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
             nullable = false,
-            columnDefinition = "TINYINT NOT NULL DEFAULT 18"
+            columnDefinition = "SMALLINT DEFAULT 18"
     )
-    private byte age;
+    private byte age = 18;
 
     @Size(
             min = 5,
@@ -154,7 +147,7 @@ public class Student extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50
     )
@@ -184,7 +177,7 @@ public class Student extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50
     )
@@ -198,7 +191,7 @@ public class Student extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50,
             name = "birth_date"
@@ -213,7 +206,7 @@ public class Student extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50,
             name = "father_name"
@@ -233,7 +226,7 @@ public class Student extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 200 ) NOT NULL",
+            columnDefinition = "VARCHAR( 200 )",
             nullable = false,
             length = 200,
             name = "student_short_description"
@@ -241,19 +234,29 @@ public class Student extends TimeInspector {
     private String studentShortDescription;
 
     @NotNull( message = ErrorMessages.NULL_VALUE )
-    @OneToMany(
+    @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = Group.class,
-            orphanRemoval = true
+            targetEntity = Group.class
     )
     @Column(
-            name = "group_list"
+            name = "group_list",
+            table = PostgreSqlTables.GROUPS
     )
     @OrderBy( value = "groupName DESC, createdDate DESC" )
-    @JoinColumn(
-            name = "student_id",
-            table = PostgreSqlTables.GROUPS
+    @JoinTable(
+            name = PostgreSqlTables.STUDENTS_WITH_GROUPS_JOIN_TABLE,
+            schema = PostgreSqlSchema.UNIVERSITY,
+            joinColumns = {
+                    @JoinColumn(
+                            name = "student_id"
+                    )
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = "group_id"
+                    )
+            }
     )
     /*
     Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
@@ -276,17 +279,14 @@ public class Student extends TimeInspector {
     @OneToMany(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = EducationDirection.class,
-            orphanRemoval = true
+            targetEntity = EducationDirection.class
     )
     @Column(
-            name = "education_direction_list"
-    )
-    @OrderBy( value = "directionName DESC" )
-    @JoinColumn(
-            name = "student_id",
+            name = "education_direction_list",
             table = PostgreSqlTables.EDUCATION_DIRECTIONS
     )
+    @OrderBy( value = "directionName DESC" )
+    @JoinColumn( name = "student_id" )
     /*
     Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
 
@@ -298,9 +298,10 @@ public class Student extends TimeInspector {
     @org.hibernate.annotations.Cache(
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
-    @Immutable
     /*
     список направлений обучения, которые нужны студенту
     */
     private List< EducationDirection > educationDirectionList = super.newList();
+
+    public Student () {}
 }

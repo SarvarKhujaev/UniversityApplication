@@ -5,6 +5,7 @@ import com.university.universityapplication.constans.PostgreSqlTables;
 import com.university.universityapplication.inspectors.Archive;
 import com.university.universityapplication.entities.*;
 
+import jakarta.validation.ConstraintViolation;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.stat.CacheRegionStatistics;
@@ -15,6 +16,8 @@ import jakarta.validation.ValidatorFactory;
 import jakarta.validation.Validation;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.Set;
 
 public final class HibernateConnector extends Archive implements ServiceCommonMethods {
     public Session getSession() {
@@ -181,6 +184,118 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging(
                 regionStatistics.getSizeInMemory()
         );
+    }
+
+    public void save ( final Student student ) {
+        final Set< ConstraintViolation< Student > > violations = super.checkEntityValidation(
+                this.getValidatorFactory().getValidator(),
+                student
+        );
+
+        if ( !super.isCollectionNotEmpty( violations ) ) {
+            final Transaction transaction = this.newTransaction();
+
+            this.getSession().save( student );
+
+            transaction.commit();
+        } else {
+            super.analyze(
+                    violations,
+                    userConstraintViolation -> super.logging( userConstraintViolation.getMessage() )
+            );
+        }
+    }
+
+    public void save ( final Teacher teacher ) {
+        final Set< ConstraintViolation< Teacher > > violations = super.checkEntityValidation(
+                this.getValidatorFactory().getValidator(),
+                teacher
+        );
+
+        if ( !super.isCollectionNotEmpty( violations ) ) {
+            final Transaction transaction = this.newTransaction();
+
+            this.getSession().save( teacher );
+
+            transaction.commit();
+        } else {
+            super.analyze(
+                    violations,
+                    userConstraintViolation -> super.logging( userConstraintViolation.getMessage() )
+            );
+        }
+    }
+
+    public void save ( final Group group ) {
+        final Set< ConstraintViolation< Group > > violations = super.checkEntityValidation(
+                this.getValidatorFactory().getValidator(),
+                group
+        );
+
+        if ( !super.isCollectionNotEmpty( violations ) ) {
+            final Transaction transaction = this.newTransaction();
+
+            this.getSession().persist( group );
+
+            transaction.commit();
+        } else {
+            super.analyze(
+                    violations,
+                    userConstraintViolation -> super.logging( userConstraintViolation.getMessage() )
+            );
+        }
+    }
+
+    public void insertStudents () {
+        for ( int i = 0; i < 5; i++ ) {
+            final Student student = new Student();
+
+            student.setAge( (byte) 25 );
+            student.setName( "test" + i );
+            student.setEmail( i + "test@gmail.com" );
+            student.setSurname( "test" + i );
+            student.setBirthDate( "test" + i );
+            student.setFatherName( "test" + i );
+            student.setStudentShortDescription( "test" + i );
+
+            this.save( student );
+        }
+    }
+
+    public void insertTeachers () {
+        for ( int i = 0; i < 5; i++ ) {
+            final Teacher teacher = new Teacher();
+
+            teacher.setAge( (byte) 25 );
+            teacher.setName( "test" + i );
+            teacher.setEmail( i + "test@gmail.com" );
+            teacher.setSurname( "test" + i );
+            teacher.setBirthDate( "test" + i );
+            teacher.setFatherName( "test" + i );
+            teacher.setTeacherShortDescription( "test" + i );
+
+            this.save( teacher );
+        }
+    }
+
+    public void insertGroups () {
+        final List< Teacher > teachers = this.getSession().createQuery(
+                "FROM TEACHERS"
+        ).getResultList();
+
+        final List< EducationDirection > educationDirectionList = this.getSession().createQuery(
+                "FROM EDUCATION_DIRECTIONS"
+        ).getResultList();
+
+        for ( int i = 0; i < 5; i++ ) {
+            final Group group = new Group();
+
+            group.setTeacher( teachers.get( i ) );
+            group.setEducationDirection( educationDirectionList.get( i ) );
+            group.setGroupName( "testGroup: " + teachers.get( i ).getName() );
+
+            this.save( group );
+        }
     }
 
     /*

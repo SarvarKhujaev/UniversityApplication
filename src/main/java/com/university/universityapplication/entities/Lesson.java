@@ -26,7 +26,31 @@ import java.util.List;
 @Cache(
         usage = CacheConcurrencyStrategy.READ_ONLY
 )
-public class Lesson extends TimeInspector {
+public final class Lesson extends TimeInspector {
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId ( final Long id ) {
+        this.id = id;
+    }
+
+    public Date getLessonDate() {
+        return this.lessonDate;
+    }
+
+    public String getLessonName() {
+        return this.lessonName;
+    }
+
+    public void setLessonName ( final String lessonName ) {
+        this.lessonName = lessonName;
+    }
+
+    public List<Comment> getCommentList() {
+        return this.commentList;
+    }
+
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
     private Long id;
@@ -36,7 +60,7 @@ public class Lesson extends TimeInspector {
             name = "lesson_date",
             nullable = false,
             updatable = false,
-            columnDefinition = PostgreSqlFunctions.NOW + " interval '5' day"
+            columnDefinition = PostgreSqlFunctions.NOW + " + interval '5' day"
     )
     @Immutable
     @PartitionKey
@@ -67,12 +91,8 @@ public class Lesson extends TimeInspector {
     @PartitionKey
     private String lessonName;
 
-    @NotNull( message = ErrorMessages.NULL_VALUE )
     @OrderBy(
             value = "createdDate DESC, comment ASC"
-    )
-    @Column(
-            name = "comment_list"
     )
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -80,6 +100,7 @@ public class Lesson extends TimeInspector {
             targetEntity = Comment.class,
             orphanRemoval = true
     )
+    @JoinColumn( name = "lesson_id" )
     /*
     Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
 
@@ -93,4 +114,6 @@ public class Lesson extends TimeInspector {
     )
     @Immutable
     private final List< Comment > commentList = super.newList();
+
+    public Lesson () {}
 }

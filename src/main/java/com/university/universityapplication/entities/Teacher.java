@@ -26,10 +26,10 @@ import java.util.List;
 @Check(
         name = PostgresConstraints.TEACHER_TABLE_CONSTRAINT,
         constraints = """
-                age >= 18
+                age >= 18 AND age <= 80
                 """
 )
-public class Teacher extends TimeInspector {
+public final class Teacher extends TimeInspector {
     public Long getId() {
         return this.id;
     }
@@ -100,6 +100,22 @@ public class Teacher extends TimeInspector {
         this.teacherShortDescription = studentShortDescription;
     }
 
+    public String getTeacherShortDescription() {
+        return this.teacherShortDescription;
+    }
+
+    public void setTeacherShortDescription ( final String teacherShortDescription ) {
+        this.teacherShortDescription = teacherShortDescription;
+    }
+
+    public List<Group> getGroupList() {
+        return this.groupList;
+    }
+
+    public void setGroupList ( final List< Group > groupList ) {
+        this.groupList = groupList;
+    }
+
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
@@ -115,19 +131,12 @@ public class Teacher extends TimeInspector {
     )
     private final Date createdDate = super.newDate(); // дата создания
 
-    @Size(
-            min = 18,
-            max = 100,
-            message = ErrorMessages.VALUE_OUT_OF_RANGE
-    )
-    @Positive
     @NotNull( message = ErrorMessages.NULL_VALUE )
-    @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
             nullable = false,
-            columnDefinition = "TINYINT NOT NULL DEFAULT 18"
+            columnDefinition = "SMALLINT DEFAULT 18"
     )
-    private byte age;
+    private byte age = 18;
 
     @Size(
             min = 5,
@@ -137,7 +146,7 @@ public class Teacher extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50
     )
@@ -167,7 +176,7 @@ public class Teacher extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50
     )
@@ -181,7 +190,7 @@ public class Teacher extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50,
             name = "birth_date"
@@ -196,7 +205,7 @@ public class Teacher extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             nullable = false,
             length = 50,
             name = "father_name"
@@ -216,7 +225,7 @@ public class Teacher extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 200 ) NOT NULL",
+            columnDefinition = "VARCHAR( 200 )",
             nullable = false,
             length = 200,
             name = "teacher_short_description"
@@ -230,11 +239,11 @@ public class Teacher extends TimeInspector {
             targetEntity = Group.class,
             orphanRemoval = true
     )
-    @OrderBy( value = "groupName DESC, createdDate DESC" )
-    @JoinColumn(
-            name = "teacher_id",
-            table = PostgreSqlTables.GROUPS
+    @Column(
+            name = "group_list"
     )
+    @OrderBy( value = "groupName DESC, createdDate DESC" )
+    @JoinColumn( name = "teacher_id" )
     /*
     Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
 
@@ -246,6 +255,7 @@ public class Teacher extends TimeInspector {
     @org.hibernate.annotations.Cache(
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
-    @Immutable
     private List< Group > groupList = super.newList();
+
+    public Teacher () {}
 }

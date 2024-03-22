@@ -4,7 +4,6 @@ import com.university.universityapplication.inspectors.TimeInspector;
 import com.university.universityapplication.constans.*;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -31,10 +30,10 @@ import java.util.List;
 @Check(
         name = PostgresConstraints.GROUP_TABLE_CONSTRAINT,
         constraints = """
-                max_students_number > 3 AND students_number > 3
+                max_students_number >= 3 AND students_number >= 0 AND students_number < max_students_number
                 """
 )
-public class Group extends TimeInspector {
+public final class Group extends TimeInspector {
     public Long getId() {
         return this.id;
     }
@@ -59,8 +58,8 @@ public class Group extends TimeInspector {
         return this.maxStudentsNumber;
     }
 
-    public List<Student> getStudentList() {
-        return this.studentList;
+    public List<Lesson> getLessonList() {
+        return this.lessonList;
     }
 
     public EducationDirection getEducationDirection() {
@@ -87,6 +86,10 @@ public class Group extends TimeInspector {
         this.maxStudentsNumber = maxStudentsNumber;
     }
 
+    public void setEducationDirection( final EducationDirection educationDirection ) {
+        this.educationDirection = educationDirection;
+    }
+
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
@@ -110,7 +113,7 @@ public class Group extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 50 ) NOT NULL",
+            columnDefinition = "VARCHAR( 50 )",
             updatable = false,
             nullable = false,
             unique = true,
@@ -124,37 +127,25 @@ public class Group extends TimeInspector {
     /*
     максималное количество студентов в одной группе
     */
-    @Size(
-            min = 3,
-            max = 20,
-            message = ErrorMessages.VALUE_OUT_OF_RANGE
-    )
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "TINYINT NOT NULL",
+            columnDefinition = "SMALLINT DEFAULT 3",
             nullable = false,
             name = "max_students_number"
     )
-    @Positive( message = ErrorMessages.VALUE_MUST_BE_POSITIVE )
-    private byte maxStudentsNumber;
+    private byte maxStudentsNumber = 3;
 
     /*
     текущее количество студентов
     не может быть боьше параметра maxStudentsNumber
     */
-    @Size(
-            min = 3,
-            max = 20,
-            message = ErrorMessages.VALUE_OUT_OF_RANGE
-    )
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "TINYINT NOT NULL",
+            columnDefinition = "SMALLINT DEFAULT 0",
             nullable = false,
             name = "students_number"
     )
-    @Positive( message = ErrorMessages.VALUE_MUST_BE_POSITIVE )
-    private byte studentsNumber;
+    private byte studentsNumber = 0;
 
     /*
     преподаватель группы
@@ -173,48 +164,12 @@ public class Group extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Immutable
     @PartitionKey
-    @Column(
-            name = "education_direction",
-            nullable = false,
-            updatable = false
-    )
-    @OneToOne(
-            orphanRemoval = true,
+    @ManyToOne(
             targetEntity = EducationDirection.class,
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
     )
     private EducationDirection educationDirection;
-
-    /*
-    список студентов которые прикреплены к этой группы
-    */
-    @NotNull( message = ErrorMessages.NULL_VALUE )
-    @OrderBy(
-            value = "name DESC, createdDate DESC"
-    )
-    @Column(
-            name = "student_list"
-    )
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.REFRESH,
-            targetEntity = Student.class,
-            orphanRemoval = true
-    )
-    /*
-    Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
-
-    If the collection is made of value types (basic or embeddables mapped with @ElementCollection),
-    the collection is stored as such.
-    If the collection contains other entities (@OneToMany or @ManyToMany),
-    the collection cache entry will store the entity identifiers only.
-    */
-    @org.hibernate.annotations.Cache(
-            usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
-    )
-    @Immutable
-    private final List< Student > studentList = super.newList();
 
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @OrderBy(
@@ -229,6 +184,7 @@ public class Group extends TimeInspector {
             targetEntity = Lesson.class,
             orphanRemoval = true
     )
+    @JoinColumn( name = "group_id" )
     /*
     Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
 
@@ -242,4 +198,6 @@ public class Group extends TimeInspector {
     )
     @Immutable
     private final List< Lesson > lessonList = super.newList();
+
+    public Group () {}
 }

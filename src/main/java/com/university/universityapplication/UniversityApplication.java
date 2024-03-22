@@ -11,6 +11,10 @@ public class UniversityApplication {
 
     public static void main( final String[] args ) {
         context = SpringApplication.run( UniversityApplication.class, args );
+
+//        HibernateConnector.getInstance().insertStudents();
+//        HibernateConnector.getInstance().insertTeachers();
+        HibernateConnector.getInstance().insertGroups();
         HibernateConnector.getInstance().close();
     }
 }
