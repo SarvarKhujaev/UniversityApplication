@@ -1,5 +1,6 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.inspectors.TimeInspector;
 import com.university.universityapplication.constans.*;
 
@@ -28,6 +29,39 @@ import java.util.List;
         constraints = """
                 age >= 18 AND age <= 80
                 """
+)
+@SqlResultSetMappings(
+        @SqlResultSetMapping(
+                name = HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS_SETTER,
+                classes = {
+                        @ConstructorResult(
+                                targetClass = TeacherAverageMark.class,
+                                columns = {
+                                        @ColumnResult(
+                                                name = "averageMark", type = Float.class
+                                        ),
+                                        @ColumnResult(
+                                                name = "lessonCount", type = Long.class
+                                        ),
+                                        @ColumnResult(
+                                                name = "averageMarkNaming", type = String.class
+                                        )
+                                }
+                        )
+                }
+        )
+)
+@org.hibernate.annotations.NamedNativeQueries(
+        value = {
+                @org.hibernate.annotations.NamedNativeQuery(
+                        name = HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS,
+                        query = HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS_QUERY,
+                        timeout = 1,
+                        readOnly = true,
+                        cacheable = true,
+                        resultSetMapping = HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS_SETTER
+                )
+        }
 )
 public final class Teacher extends TimeInspector {
     public Long getId() {
@@ -110,10 +144,6 @@ public final class Teacher extends TimeInspector {
 
     public List<Group> getGroupList() {
         return this.groupList;
-    }
-
-    public void setGroupList ( final List< Group > groupList ) {
-        this.groupList = groupList;
     }
 
     @Id
@@ -255,7 +285,7 @@ public final class Teacher extends TimeInspector {
     @org.hibernate.annotations.Cache(
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
-    private List< Group > groupList = super.newList();
+    private final List< Group > groupList = super.newList();
 
     public Teacher () {}
 }

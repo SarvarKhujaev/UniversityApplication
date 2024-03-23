@@ -1,5 +1,6 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.inspectors.TimeInspector;
 import com.university.universityapplication.constans.*;
 
@@ -33,6 +34,23 @@ import java.util.List;
                 max_students_number >= 3 AND students_number >= 0 AND students_number < max_students_number
                 """
 )
+@org.hibernate.annotations.NamedNativeQueries(
+        value = {
+                @org.hibernate.annotations.NamedNativeQuery(
+                        name = HibernateNativeNamedQueries.GET_ALL_GROUPS_FOR_CURRENT_USER_BY_USER_ID,
+                        query = HibernateNativeNamedQueries.GET_ALL_GROUPS_FOR_CURRENT_USER_BY_USER_ID_QUERY,
+                        timeout = 1,
+                        readOnly = true,
+                        cacheable = true,
+                        resultClass = Group.class,
+                        comment = """
+                                делаем выборку по всем группам
+                                чтобы найти те, в которых участвует студент
+                                при запросе отправляется параметр student_id
+                                """
+                )
+        }
+)
 public final class Group extends TimeInspector {
     public Long getId() {
         return this.id;
@@ -58,7 +76,7 @@ public final class Group extends TimeInspector {
         return this.maxStudentsNumber;
     }
 
-    public List<Lesson> getLessonList() {
+    public List< Lesson > getLessonList() {
         return this.lessonList;
     }
 
@@ -72,6 +90,7 @@ public final class Group extends TimeInspector {
 
     public void setTeacher ( final Teacher teacher ) {
         this.teacher = teacher;
+        this.getTeacher().getGroupList().add( this );
     }
 
     public void setGroupName ( final String groupName ) {
@@ -159,8 +178,8 @@ public final class Group extends TimeInspector {
     private Teacher teacher;
 
     /*
-название направления по которым проводятся занятия
-*/
+    название направления по которым проводятся занятия
+    */
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Immutable
     @PartitionKey
@@ -196,7 +215,6 @@ public final class Group extends TimeInspector {
     @org.hibernate.annotations.Cache(
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
-    @Immutable
     private final List< Lesson > lessonList = super.newList();
 
     public Group () {}

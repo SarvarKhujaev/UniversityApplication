@@ -47,7 +47,7 @@ public final class Lesson extends TimeInspector {
         this.lessonName = lessonName;
     }
 
-    public List<Comment> getCommentList() {
+    public List< Comment > getCommentList() {
         return this.commentList;
     }
 
@@ -91,8 +91,12 @@ public final class Lesson extends TimeInspector {
     @PartitionKey
     private String lessonName;
 
+    @NotNull( message = ErrorMessages.NULL_VALUE )
     @OrderBy(
             value = "createdDate DESC, comment ASC"
+    )
+    @Column(
+            name = "comment_list"
     )
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -112,7 +116,6 @@ public final class Lesson extends TimeInspector {
     @org.hibernate.annotations.Cache(
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
-    @Immutable
     private final List< Comment > commentList = super.newList();
 
     public Lesson () {}

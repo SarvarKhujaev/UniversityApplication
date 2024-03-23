@@ -1,17 +1,19 @@
 package com.university.universityapplication.database;
 
+import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
 import com.university.universityapplication.constans.PostgreSqlTables;
+import com.university.universityapplication.constans.PostgreSqlSchema;
 import com.university.universityapplication.inspectors.Archive;
 import com.university.universityapplication.entities.*;
 
-import jakarta.validation.ConstraintViolation;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.stat.CacheRegionStatistics;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.*;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.Validation;
 
@@ -69,6 +71,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 .addAnnotatedClass( Student.class )
                 .addAnnotatedClass( Comment.class )
                 .addAnnotatedClass( EducationDirection.class )
+                .addAnnotatedClass( StudentAppearanceInLessons.class )
                 .getMetadataBuilder()
                 .build()
                 .getSessionFactoryBuilder()
@@ -93,6 +96,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         this.getSessionFactory().getCache().evictEntityData( Student.class );
         this.getSessionFactory().getCache().evictEntityData( Comment.class );
         this.getSessionFactory().getCache().evictEntityData( EducationDirection.class );
+        this.getSessionFactory().getCache().evictEntityData( StudentAppearanceInLessons.class );
 
         /*
         Hibernate specific JDBC batch size configuration on a per-Session basis
@@ -102,14 +106,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( this.getClass() );
     }
 
-    private void checkBatchLimit (
-            final int operationsCounter
-    ) {
-        /*
-        проверяем что количество операций не превысило
-        макс количество Batch
-         */
-        if ( operationsCounter > 0 && ( operationsCounter & super.BATCH_SIZE ) == 0 ) {
+    private void checkBatchLimit () {
+        if ( super.isBatchLimitNotOvercrowded() ) {
             /*
             если да, то освобождаем пространство в кеше
             на уровне first-level cache
@@ -195,7 +193,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         if ( !super.isCollectionNotEmpty( violations ) ) {
             final Transaction transaction = this.newTransaction();
 
-            this.getSession().save( student );
+            this.getSession().persist( student );
 
             transaction.commit();
         } else {
@@ -247,7 +245,12 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     }
 
     public void insertStudents () {
+        final List< EducationDirection > educationDirectionList = this.getSession().createQuery(
+                "FROM EDUCATION_DIRECTIONS"
+        ).getResultList();
+
         for ( int i = 0; i < 5; i++ ) {
+            this.checkBatchLimit();
             final Student student = new Student();
 
             student.setAge( (byte) 25 );
@@ -258,12 +261,16 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             student.setFatherName( "test" + i );
             student.setStudentShortDescription( "test" + i );
 
+            student.setEducationDirectionList( educationDirectionList );
+
             this.save( student );
         }
     }
 
     public void insertTeachers () {
         for ( int i = 0; i < 5; i++ ) {
+            this.checkBatchLimit();
+
             final Teacher teacher = new Teacher();
 
             teacher.setAge( (byte) 25 );
@@ -279,6 +286,12 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     }
 
     public void insertGroups () {
+        final Transaction transaction = this.newTransaction();
+
+        final List< Student > students = this.getSession().createQuery(
+                "FROM STUDENTS"
+        ).getResultList();
+
         final List< Teacher > teachers = this.getSession().createQuery(
                 "FROM TEACHERS"
         ).getResultList();
@@ -288,14 +301,135 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         ).getResultList();
 
         for ( int i = 0; i < 5; i++ ) {
+            this.checkBatchLimit();
+
             final Group group = new Group();
 
             group.setTeacher( teachers.get( i ) );
+            group.setGroupName( "testGroup: " + i );
+            group.setMaxStudentsNumber( (byte) 5 );
             group.setEducationDirection( educationDirectionList.get( i ) );
-            group.setGroupName( "testGroup: " + teachers.get( i ).getName() );
 
-            this.save( group );
+            this.getSession().persist( teachers.get( i ) );
+
+            students.get( i ).addNewGroup( group );
+
+            this.getSession().persist( students.get( i ) );
+
+            this.getSession().persist( group );
         }
+
+        transaction.commit();
+    }
+
+    public void save () {
+        final Transaction transaction = this.newTransaction();
+
+        final Group group = this.getSession().get( Group.class, 9L );
+
+        for ( int i = 0; i < 5; i++ ) {
+            this.checkBatchLimit();
+
+            final Lesson lesson = new Lesson();
+
+            lesson.setLessonName( "test" + i );
+
+            group.getLessonList().add( lesson );
+
+            this.getSession().persist( lesson );
+        }
+
+        this.getSession().update( group );
+
+        transaction.commit();
+
+        super.logging( transaction );
+    }
+
+    public void saveComments () {
+        final Transaction transaction = this.newTransaction();
+
+        final Lesson lesson = this.getSession().get(
+                Lesson.class,
+                11L
+        );
+
+        final List< Student > students = this.getSession().createQuery(
+                "FROM STUDENTS",
+                Student.class
+        ).getResultList();
+
+        for ( int i = 0; i < students.size(); i++ ) {
+            this.checkBatchLimit();
+
+            final Comment comment = new Comment();
+
+            comment.setStudent( students.get( i ) );
+            comment.setComment( "test" + i );
+            comment.setLesson( lesson );
+
+            lesson.getCommentList().add( comment );
+
+            this.getSession().persist( comment );
+        }
+
+        this.getSession().update( lesson );
+
+        transaction.commit();
+
+        super.logging( transaction );
+    }
+
+    public void test () {
+        final Transaction transaction = this.newTransaction();
+
+        final List< Student > students = this.getSession().createQuery(
+                "FROM STUDENTS WHERE id IN ( 7, 8, 9, 10 )"
+        ).getResultList();
+
+        final Group group = this.getSession().get( Group.class, 9L );
+
+        super.analyze(
+                students,
+                student -> student.addNewGroup( group )
+        );
+
+        super.analyze(
+                students,
+                this.getSession()::persist
+        );
+
+        this.getSession().update( group );
+
+        transaction.commit();
+    }
+
+    public void getGroup () {
+        final TeacherAverageMark teacherAverageMark = this.getSession().createNamedQuery(
+                HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS,
+                TeacherAverageMark.class
+        ).setParameter( "teacher_id", 1 )
+                .setCacheable( true )
+                .setCacheMode( CacheMode.GET )
+                .setCacheRegion(
+                        super.generateCacheName( PostgreSqlSchema.UNIVERSITY )
+                ).getSingleResult();
+
+        System.out.println(
+                teacherAverageMark.getAverageMarkNaming()
+                + " : "
+                + teacherAverageMark.getAverageMark()
+                + " : "
+                + teacherAverageMark.getLessonCount()
+        );
+    }
+
+    public void getStudent () {
+        final Student student = this.getSession().get( Student.class, 7L );
+        super.analyze(
+                student.getEducationDirectionList(),
+                educationDirection -> super.logging( educationDirection.getDirectionName() )
+        );
     }
 
     /*

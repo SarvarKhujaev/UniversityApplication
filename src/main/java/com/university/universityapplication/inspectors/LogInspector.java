@@ -2,6 +2,8 @@ package com.university.universityapplication.inspectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import org.hibernate.Transaction;
 import org.junit.runner.Result;
 
 public class LogInspector extends TimeInspector {
@@ -34,5 +36,9 @@ public class LogInspector extends TimeInspector {
 
     protected void logging ( final String message ) {
         this.getLOGGER().info( message );
+    }
+
+    protected void logging ( final Transaction transaction ) {
+        this.getLOGGER().info( transaction.getStatus() );
     }
 }

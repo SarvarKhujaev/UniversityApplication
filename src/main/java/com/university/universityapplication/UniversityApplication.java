@@ -14,7 +14,7 @@ public class UniversityApplication {
 
 //        HibernateConnector.getInstance().insertStudents();
 //        HibernateConnector.getInstance().insertTeachers();
-        HibernateConnector.getInstance().insertGroups();
+//        HibernateConnector.getInstance().saveComments();
         HibernateConnector.getInstance().close();
     }
 }

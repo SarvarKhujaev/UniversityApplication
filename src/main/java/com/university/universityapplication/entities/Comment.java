@@ -95,36 +95,33 @@ public final class Comment extends TimeInspector {
     @Column(
             length = 200,
             nullable = false,
-            columnDefinition = "VARCHAR( 200 ) NOT NULL"
+            columnDefinition = "VARCHAR( 200 )"
     )
     private String comment;
 
-    @Size(
-            min = 1,
-            max = 5,
-            message = ErrorMessages.VALUE_OUT_OF_RANGE
-    )
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Column(
             columnDefinition = "SMALLINT DEFAULT 5"
     )
     /*
-    оценка урока
+    оценка урока от студента
+    по умолчанию будем ставить высшую оценку
+    Интервал оценок 1 - 5
     */
-    private final byte mark = 5;
+    private final byte mark = 3;
 
+    @Immutable
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @ManyToOne(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             targetEntity = Student.class
     )
-    @Immutable
     private Student student;
 
     /*
-        урок к которому оставлен комментарий
-        */
+    урок к которому оставлен комментарий
+    */
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Immutable
     @PartitionKey
@@ -132,10 +129,6 @@ public final class Comment extends TimeInspector {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             targetEntity = Lesson.class
-    )
-    @JoinColumn(
-            name = "comment_id",
-            table = PostgreSqlTables.COMMENTS
     )
     private Lesson lesson;
 

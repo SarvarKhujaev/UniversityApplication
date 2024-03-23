@@ -107,6 +107,22 @@ public final class Student extends TimeInspector {
         this.groupList = groupList;
     }
 
+    public void addNewGroup ( final Group group ) {
+        /*
+        проверяем что в группу можно добавить нового студента
+        */
+        if ( group.getMaxStudentsNumber() - group.getStudentsNumber() >= 1 ) {
+            /*
+            добавляем в список
+            */
+            this.getGroupList().add( group );
+            /*
+            увеличиваем счетчик
+            */
+            group.setStudentsNumber( (byte) ( group.getStudentsNumber() + 1 ) );
+        }
+    }
+
     public List< EducationDirection > getEducationDirectionList() {
         return this.educationDirectionList;
     }
@@ -269,24 +285,36 @@ public final class Student extends TimeInspector {
     @org.hibernate.annotations.Cache(
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
-    @Immutable
     /*
     список групп к которым прикреплен студент
     */
     private List< Group > groupList = super.newList();
 
     @NotNull( message = ErrorMessages.NULL_VALUE )
-    @OneToMany(
+    @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             targetEntity = EducationDirection.class
     )
     @Column(
-            name = "education_direction_list",
+            name = "student_education_direction_list",
             table = PostgreSqlTables.EDUCATION_DIRECTIONS
     )
     @OrderBy( value = "directionName DESC" )
-    @JoinColumn( name = "student_id" )
+    @JoinTable(
+            name = PostgreSqlTables.STUDENTS_WITH_EDUCATION_DIRECTION_JOIN_TABLE,
+            schema = PostgreSqlSchema.UNIVERSITY,
+            joinColumns = {
+                    @JoinColumn(
+                            name = "student_id"
+                    )
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = "education_direction_id"
+                    )
+            }
+    )
     /*
     Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property.
 
