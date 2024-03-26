@@ -36,6 +36,14 @@ public final class Lesson extends TimeInspector {
         return this.lessonDate;
     }
 
+    public LessonStatus getLessonStatus() {
+        return this.lessonStatus;
+    }
+
+    public void setLessonStatus( final LessonStatus lessonStatus ) {
+        this.lessonStatus = lessonStatus;
+    }
+
     public String getLessonName() {
         return this.lessonName;
     }
@@ -121,7 +129,7 @@ public final class Lesson extends TimeInspector {
     @Column(
             name = "lesson_status",
             nullable = false,
-            columnDefinition = "DEFAULT 'CREATED'"
+            columnDefinition = "VARCHAR( 255 ) DEFAULT 'CREATED'"
     )
     @PartitionKey
     private LessonStatus lessonStatus = LessonStatus.CREATED;

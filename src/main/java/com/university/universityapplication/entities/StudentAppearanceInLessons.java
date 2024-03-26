@@ -101,6 +101,15 @@ public final class StudentAppearanceInLessons extends TimeInspector {
         this.lessonAppearanceTypes = lessonAppearanceTypes;
     }
 
+    public void updateLessonAppearance () {
+        this.setLessonAppearanceTypes(
+                super.getLessonAppearanceTypesDueToAppearanceTime(
+                        this.getAppearanceDate(),
+                        this.getLesson().getLessonDate()
+                )
+        );
+    }
+
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
     private Long id;
@@ -143,10 +152,7 @@ public final class StudentAppearanceInLessons extends TimeInspector {
             columnDefinition = "DEFAULT 'ABSENT'"
     )
     @PartitionKey
-    private LessonAppearanceTypes lessonAppearanceTypes = super.getLessonAppearanceTypesDueToAppearanceTime(
-            this.getAppearanceDate(),
-            this.getLesson().getLessonDate()
-    );
+    private LessonAppearanceTypes lessonAppearanceTypes = LessonAppearanceTypes.ABSENT;
 
     public StudentAppearanceInLessons () {}
 }

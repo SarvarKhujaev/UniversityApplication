@@ -115,29 +115,25 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
 
     @Override
     public void vacuumTable () {
-        final Transaction transaction = this.newTransaction();
-
         super.analyze(
                 super.getTablesList(),
                 table -> super.logging(
                         table
                                 + " was cleaned: "
                                 + this.getSession().createNativeQuery(
-                                MessageFormat.format(
-                                        """
-                                        VACUUM( {0}, {1} ) {2};
-                                        """,
-                                        PostgresVacuumMethods.ANALYZE,
-                                        PostgresVacuumMethods.VERBOSE,
-                                        table
-                                )
-                        ).executeUpdate()
+                                        MessageFormat.format(
+                                                """
+                                                VACUUM( {0}, {1} ) {2}.{3}
+                                                """,
+                                                PostgresVacuumMethods.ANALYZE,
+                                                PostgresVacuumMethods.VERBOSE,
+
+                                                PostgreSqlSchema.UNIVERSITY,
+                                                table
+                                        )
+                        ).getQueryString()
                 )
         );
-
-        transaction.commit();
-
-        super.logging( transaction );
     }
 
     @Override
@@ -145,9 +141,9 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         загружаем список таблиц
         */
-        this.getSession().createNativeQuery(
+        this.getSession().createQuery(
                 PostgresBufferMethods.PREWARM_TABLE
-        ).executeUpdate();
+        ).getSingleResult();
     }
 
     @Override
@@ -159,11 +155,11 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 table -> super.logging(
                         table
                                 + " was inserted into buffer: "
-                                + this.getSession().createNativeQuery(
+                                + this.getSession().createQuery(
                                 PostgresBufferMethods.INSERT_TABLE_CONTENT_INTO_BUFFER.formatted(
                                         table
                                 )
-                        ).executeUpdate()
+                        ).getQueryString()
                 )
         );
 

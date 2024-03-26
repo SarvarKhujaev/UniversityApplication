@@ -27,7 +27,6 @@ public class CollectionsInspector extends DataValidateInspector {
 
     protected List< String > getTablesList () {
         return List.of(
-                PostgreSqlTables.LOG,
                 PostgreSqlTables.GROUPS,
                 PostgreSqlTables.LESSONS,
                 PostgreSqlTables.TEACHERS,
