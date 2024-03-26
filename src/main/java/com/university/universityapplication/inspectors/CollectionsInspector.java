@@ -1,5 +1,7 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.constans.PostgreSqlTables;
+
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.*;
@@ -21,6 +23,18 @@ public class CollectionsInspector extends DataValidateInspector {
 
     protected <T, V> Map<T, V> newMap () {
         return new HashMap<>();
+    }
+
+    protected List< String > getTablesList () {
+        return List.of(
+                PostgreSqlTables.LOG,
+                PostgreSqlTables.GROUPS,
+                PostgreSqlTables.LESSONS,
+                PostgreSqlTables.TEACHERS,
+                PostgreSqlTables.COMMENTS,
+                PostgreSqlTables.STUDENTS,
+                PostgreSqlTables.EDUCATION_DIRECTIONS
+        );
     }
 
     public <T> void analyze (

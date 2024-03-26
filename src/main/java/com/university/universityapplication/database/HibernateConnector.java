@@ -2,6 +2,8 @@ package com.university.universityapplication.database;
 
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
+import com.university.universityapplication.constans.PostgresBufferMethods;
+import com.university.universityapplication.constans.PostgresVacuumMethods;
 import com.university.universityapplication.constans.PostgreSqlTables;
 import com.university.universityapplication.constans.PostgreSqlSchema;
 import com.university.universityapplication.inspectors.Archive;
@@ -43,10 +45,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     private final StandardServiceRegistry registry;
     private final ValidatorFactory validatorFactory;
 
-    private static HibernateConnector connector = new HibernateConnector();
+    private static HibernateConnector CONNECTOR = new HibernateConnector();
 
     public static HibernateConnector getInstance() {
-        return connector != null ? connector : ( connector = new HibernateConnector() );
+        return CONNECTOR != null ? CONNECTOR : ( CONNECTOR = new HibernateConnector() );
     }
 
     private Transaction newTransaction () {
@@ -103,7 +105,69 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
          */
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
+        this.prewarmTable();
+
+        this.insertTableContentToBuffer();
+
         super.logging( this.getClass() );
+    }
+
+    @Override
+    public void vacuumTable () {
+        final Transaction transaction = this.newTransaction();
+
+        super.analyze(
+                super.getTablesList(),
+                table -> super.logging(
+                        table
+                                + " was cleaned: "
+                                + this.getSession().createNativeQuery(
+                                MessageFormat.format(
+                                        """
+                                        VACUUM( {0}, {1} ) {2};
+                                        """,
+                                        PostgresVacuumMethods.ANALYZE,
+                                        PostgresVacuumMethods.VERBOSE,
+                                        table
+                                )
+                        ).executeUpdate()
+                )
+        );
+
+        transaction.commit();
+
+        super.logging( transaction );
+    }
+
+    @Override
+    public void prewarmTable () {
+        /*
+        загружаем список таблиц
+        */
+        this.getSession().createNativeQuery(
+                PostgresBufferMethods.PREWARM_TABLE
+        ).executeUpdate();
+    }
+
+    @Override
+    public void insertTableContentToBuffer () {
+        final Transaction transaction = this.newTransaction();
+
+        super.analyze(
+                super.getTablesList(),
+                table -> super.logging(
+                        table
+                                + " was inserted into buffer: "
+                                + this.getSession().createNativeQuery(
+                                PostgresBufferMethods.INSERT_TABLE_CONTENT_INTO_BUFFER.formatted(
+                                        table
+                                )
+                        ).executeUpdate()
+                )
+        );
+
+        transaction.commit();
+        super.logging( transaction );
     }
 
     private void checkBatchLimit () {
@@ -424,26 +488,19 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         );
     }
 
-    public void getStudent () {
-        final Student student = this.getSession().get( Student.class, 7L );
-        super.analyze(
-                student.getEducationDirectionList(),
-                educationDirection -> super.logging( educationDirection.getDirectionName() )
-        );
-    }
-
     /*
     закрывам все соединения и instance
     */
     @Override
     public synchronized void close () {
+        this.vacuumTable();
         this.getSession().clear();
         this.getSession().close();
         this.getSessionFactory().close();
         this.getValidatorFactory().close();
         StandardServiceRegistryBuilder.destroy( this.getRegistry() );
 
-        connector = null;
+        CONNECTOR = null;
 
         super.logging( this );
     }
