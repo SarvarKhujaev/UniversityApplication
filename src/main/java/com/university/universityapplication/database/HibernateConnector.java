@@ -1,5 +1,6 @@
 package com.university.universityapplication.database;
 
+import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
 import com.university.universityapplication.constans.PostgresBufferMethods;

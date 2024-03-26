@@ -1,4 +1,4 @@
-package com.university.universityapplication.entities;
+package com.university.universityapplication.entities.query_result_mapper_entities;
 
 public final class TeacherAverageMark {
     private Long lessonCount;

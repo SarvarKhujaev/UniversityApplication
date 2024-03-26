@@ -1,7 +1,7 @@
 package com.university.universityapplication.constans;
 
 public final class PostgreSqlTables {
-    public static final String LOG = "LOG";
+    public static final String LOG = "LOGS";
     public static final String GROUPS = "GROUPS";
     public static final String LESSONS = "LESSONS";
     public static final String TEACHERS = "TEACHERS";

@@ -1,5 +1,6 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.inspectors.TimeInspector;
 import com.university.universityapplication.constans.*;
@@ -59,6 +60,7 @@ import java.util.List;
                         timeout = 1,
                         readOnly = true,
                         cacheable = true,
+                        resultClass = TeacherAverageMark.class,
                         resultSetMapping = HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS_SETTER
                 )
         }

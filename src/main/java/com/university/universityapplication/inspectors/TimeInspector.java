@@ -1,5 +1,6 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.constans.LessonAppearanceTypes;
 import java.util.Date;
 
 public class TimeInspector extends StringOperations {
@@ -13,5 +14,18 @@ public class TimeInspector extends StringOperations {
             final long timeInterval
     ) {
         return new Date( timeInterval );
+    }
+
+    /*
+    когда студент присоединяеться к занятию,
+    проверяем пришел ли он вовремя или опоздал
+     */
+    protected LessonAppearanceTypes getLessonAppearanceTypesDueToAppearanceTime (
+            final Date studentAppearanceDate,
+            final Date lessonStartDate
+    ) {
+        return studentAppearanceDate.after( lessonStartDate )
+                ? LessonAppearanceTypes.LATE
+                : LessonAppearanceTypes.IN_TIME;
     }
 }

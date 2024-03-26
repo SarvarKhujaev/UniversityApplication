@@ -1,10 +1,7 @@
 package com.university.universityapplication.entities;
 
-import com.university.universityapplication.constans.PostgreSqlFunctions;
-import com.university.universityapplication.constans.PostgreSqlSchema;
-import com.university.universityapplication.constans.PostgreSqlTables;
 import com.university.universityapplication.inspectors.TimeInspector;
-import com.university.universityapplication.constans.ErrorMessages;
+import com.university.universityapplication.constans.*;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.PartitionKey;
@@ -117,6 +114,17 @@ public final class Lesson extends TimeInspector {
             usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE
     )
     private final List< Comment > commentList = super.newList();
+
+    // https://www.baeldung.com/jpa-default-column-values
+    @NotNull( message = ErrorMessages.NULL_VALUE )
+    @Enumerated( value = EnumType.STRING )
+    @Column(
+            name = "lesson_status",
+            nullable = false,
+            columnDefinition = "DEFAULT 'CREATED'"
+    )
+    @PartitionKey
+    private LessonStatus lessonStatus = LessonStatus.CREATED;
 
     public Lesson () {}
 }

@@ -40,4 +40,16 @@ public final class HibernateNativeNamedQueries {
                 WHERE g.teacher_id = :teacher_id
             );
             """;
+
+    public static final String GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE = "GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE";
+
+    public static final String GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER = "GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER";
+
+    public static final String GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_QUERY = """
+            SELECT s.lesson_appearance_types AS lessonAppearanceTypes,
+            COUNT( s.lesson_appearance_types ) AS lessonsCount, -- общее количество занятий студента
+            FROM university.STUDENT_APPEARANCE_IN_LESSONS s
+            WHERE s.student_id = :student_id
+            GROUP BY s.lesson_appearance_types;
+            """;
 }

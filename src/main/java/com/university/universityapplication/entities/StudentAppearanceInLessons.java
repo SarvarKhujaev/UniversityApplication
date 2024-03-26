@@ -1,5 +1,7 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.entities.query_result_mapper_entities.StudentLessonAppearanceStat;
+import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.inspectors.TimeInspector;
 import com.university.universityapplication.constans.*;
 
@@ -24,7 +26,81 @@ import java.util.Date;
 @Cache(
         usage = CacheConcurrencyStrategy.READ_ONLY
 )
+@SqlResultSetMappings(
+        value = {
+                @SqlResultSetMapping(
+                        name = HibernateNativeNamedQueries.GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER,
+                        classes = {
+                                @ConstructorResult(
+                                        targetClass = StudentLessonAppearanceStat.class,
+                                        columns = {
+                                                @ColumnResult(
+                                                        name = "lessonsCount", type = Long.class
+                                                ),
+                                                @ColumnResult(
+                                                        name = "lessonAppearanceTypes", type = LessonAppearanceTypes.class
+                                                )
+                                        }
+                                )
+                        }
+                )
+        }
+)
+@org.hibernate.annotations.NamedNativeQueries(
+        value = {
+                @org.hibernate.annotations.NamedNativeQuery(
+                        name = HibernateNativeNamedQueries.GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE,
+                        query = HibernateNativeNamedQueries.GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_QUERY,
+                        timeout = 1,
+                        readOnly = true,
+                        cacheable = true,
+                        resultClass = StudentLessonAppearanceStat.class,
+                        resultSetMapping = HibernateNativeNamedQueries.GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER,
+                        comment = """
+                                вычисляем данные о посещении студентом
+                                всех его занятий за все время
+                                группируем по типу посещения
+                                """
+                )
+        }
+)
 public final class StudentAppearanceInLessons extends TimeInspector {
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId ( final Long id ) {
+        this.id = id;
+    }
+
+    public Date getAppearanceDate() {
+        return this.appearanceDate;
+    }
+
+    public Student getStudent() {
+        return this.student;
+    }
+
+    public void setStudent ( final Student student ) {
+        this.student = student;
+    }
+
+    public Lesson getLesson() {
+        return this.lesson;
+    }
+
+    public void setLesson ( final Lesson lesson ) {
+        this.lesson = lesson;
+    }
+
+    public LessonAppearanceTypes getLessonAppearanceTypes() {
+        return this.lessonAppearanceTypes;
+    }
+
+    public void setLessonAppearanceTypes ( final LessonAppearanceTypes lessonAppearanceTypes ) {
+        this.lessonAppearanceTypes = lessonAppearanceTypes;
+    }
+
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
     private Long id;
@@ -59,14 +135,18 @@ public final class StudentAppearanceInLessons extends TimeInspector {
     private Lesson lesson;
 
     // https://www.baeldung.com/jpa-default-column-values
-    @Immutable
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Enumerated( value = EnumType.STRING )
     @Column(
             name = "lesson_appearance_types",
             nullable = false,
-            updatable = false
+            columnDefinition = "DEFAULT 'ABSENT'"
     )
     @PartitionKey
-    private LessonAppearanceTypes lessonAppearanceTypes = LessonAppearanceTypes.IN_TIME;
+    private LessonAppearanceTypes lessonAppearanceTypes = super.getLessonAppearanceTypesDueToAppearanceTime(
+            this.getAppearanceDate(),
+            this.getLesson().getLessonDate()
+    );
+
+    public StudentAppearanceInLessons () {}
 }
