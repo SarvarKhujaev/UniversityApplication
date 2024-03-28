@@ -18,6 +18,8 @@ public final class PostgresJoinTypes {
     public static final String CROSS_JOIN = "CROSS JOIN";
 
     /*
+    https://stackoverflow.com/questions/28550679/what-is-the-difference-between-a-lateral-join-and-a-subquery-in-postgresql
+
     Аналог CROSS APPLY в других СУБД.
     Используется для джойна с подзапросом.
     При этом в самом подзапросе можно использовать поля из основного запроса - получается зависимый подзапрос
@@ -30,6 +32,6 @@ public final class PostgresJoinTypes {
 
     Также lateral join единственный способ соединения с результатами
     вызова функции, возвращающей не одно значение.
-     */
+    */
     public static final String LATERAL_JOIN = "LATERAL JOIN";
 }

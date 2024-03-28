@@ -5,12 +5,13 @@ public final class HibernateNativeNamedQueries {
 
     public static final String GET_ALL_GROUPS_FOR_CURRENT_USER_BY_USER_ID_QUERY = """
             SELECT *
-            FROM university.groups
+            FROM university.groups g
             WHERE id IN (
                     SELECT s.group_id
                     FROM university.STUDENTS_WITH_GROUPS_JOIN_TABLE s
                     WHERE s.student_id = :student_id
                 )
+            ORDER BY g.id
             """;
 
     public static final String GET_TEACHER_AVERAGE_MARKS = "GET_TEACHER_AVERAGE_MARKS";
@@ -46,8 +47,20 @@ public final class HibernateNativeNamedQueries {
     public static final String GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER = "GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER";
 
     public static final String GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_QUERY = """
+            --сначала вычисляем одним запросом общее количество занятий студента
+            WITH studentLessonsCount (
+                SELECT COUNT(*) AS totalLessonsCount,
+                FROM university.STUDENT_APPEARANCE_IN_LESSONS s
+                WHERE s.student_id = :student_id
+            )
             SELECT s.lesson_appearance_types AS lessonAppearanceTypes,
-            COUNT( s.lesson_appearance_types ) AS lessonsCount, -- общее количество занятий студента
+            COUNT( s.lesson_appearance_types ) AS lessonsCount, -- общее количество занятий студента сгрупораванные по lesson_appearance_types
+            studentLessonsCount.totalLessonsCount, -- общее количество занятий студента
+            CASE
+            WHEN s.lesson_appearance_types 'IN_TIME' THEN 'пришел вовремя'
+            WHEN s.lesson_appearance_types 'ABSENT' THEN 'отсутствовал'
+            ELSE 'опоздал'
+            END studentAppearanceDesc
             FROM university.STUDENT_APPEARANCE_IN_LESSONS s
             WHERE s.student_id = :student_id
             GROUP BY s.lesson_appearance_types;
