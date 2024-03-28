@@ -1,6 +1,7 @@
 package com.university.universityapplication.inspectors;
 
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
+import com.university.universityapplication.entities.*;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -15,10 +16,6 @@ public class CollectionsInspector extends DataValidateInspector {
 
     protected  <T> ArrayList<T> newList () {
         return new ArrayList<>();
-    }
-
-    protected  <T> List<T> newList ( final T ... objects ) {
-        return List.of( objects );
     }
 
     protected <T, V> Map<T, V> newMap () {
@@ -36,14 +33,26 @@ public class CollectionsInspector extends DataValidateInspector {
         );
     }
 
-    public <T> void analyze (
+    protected List< Class<?> > getClassesReferences () {
+        return List.of(
+                Group.class,
+                Lesson.class,
+                Teacher.class,
+                Student.class,
+                Comment.class,
+                EducationDirection.class,
+                StudentAppearanceInLessons.class
+        );
+    }
+
+    public synchronized <T> void analyze (
             final Collection<T> someList,
             final Consumer<T> someConsumer
     ) {
         someList.forEach( someConsumer );
     }
 
-    protected <T, V> void analyze (
+    protected synchronized <T, V> void analyze (
             final Map< T, V > someList,
             final BiConsumer<T, V> someConsumer
     ) {

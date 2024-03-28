@@ -19,6 +19,7 @@ public final class PostgresJoinTypes {
 
     /*
     https://stackoverflow.com/questions/28550679/what-is-the-difference-between-a-lateral-join-and-a-subquery-in-postgresql
+    https://stackoverflow.com/questions/25536422/optimize-group-by-query-to-retrieve-latest-row-per-user/25536748#25536748
 
     Аналог CROSS APPLY в других СУБД.
     Используется для джойна с подзапросом.

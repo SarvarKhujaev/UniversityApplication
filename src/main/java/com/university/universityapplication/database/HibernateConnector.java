@@ -1,8 +1,6 @@
 package com.university.universityapplication.database;
 
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
-import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
-import com.university.universityapplication.constans.postgres_constants.PostgresVacuumMethods;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
@@ -64,17 +62,17 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 .applySettings( super.dbSettings )
                 .build();
 
+        final MetadataSources metadataSources = new MetadataSources( this.getRegistry() );
+
+        super.analyze(
+                super.getClassesReferences(),
+                metadataSources::addAnnotatedClass
+        );
+
         /*
         подключаемся к самой БД
         */
-        this.sessionFactory = new MetadataSources( this.getRegistry() )
-                .addAnnotatedClass( Group.class )
-                .addAnnotatedClass( Lesson.class )
-                .addAnnotatedClass( Teacher.class )
-                .addAnnotatedClass( Student.class )
-                .addAnnotatedClass( Comment.class )
-                .addAnnotatedClass( EducationDirection.class )
-                .addAnnotatedClass( StudentAppearanceInLessons.class )
+        this.sessionFactory = metadataSources
                 .getMetadataBuilder()
                 .build()
                 .getSessionFactoryBuilder()
@@ -93,96 +91,19 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         настраиваем Second Level Cache
         */
-        this.getSessionFactory().getCache().evictEntityData( Group.class );
-        this.getSessionFactory().getCache().evictEntityData( Lesson.class );
-        this.getSessionFactory().getCache().evictEntityData( Teacher.class );
-        this.getSessionFactory().getCache().evictEntityData( Student.class );
-        this.getSessionFactory().getCache().evictEntityData( Comment.class );
-        this.getSessionFactory().getCache().evictEntityData( EducationDirection.class );
-        this.getSessionFactory().getCache().evictEntityData( StudentAppearanceInLessons.class );
+        super.analyze(
+                super.getClassesReferences(),
+                clazz -> this.getSessionFactory().getCache().evictEntityData( clazz )
+        );
 
         /*
         Hibernate specific JDBC batch size configuration on a per-Session basis
          */
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
-        this.prewarmTable();
-
-        this.insertTableContentToBuffer();
+        PostgresBufferRegister.generate( this.getSession() );
 
         super.logging( this.getClass() );
-    }
-
-    @Override
-    public void vacuumTable () {
-        super.analyze(
-                super.getTablesList(),
-                table -> super.logging(
-                        table
-                                + " was cleaned: "
-                                + this.getSession().createNativeQuery(
-                                        MessageFormat.format(
-                                                """
-                                                VACUUM( {0}, {1} ) {2}.{3}
-                                                """,
-                                                PostgresVacuumMethods.ANALYZE,
-                                                PostgresVacuumMethods.VERBOSE,
-
-                                                PostgreSqlSchema.UNIVERSITY,
-                                                table
-                                        )
-                        ).getQueryString()
-                )
-        );
-    }
-
-    @Override
-    public void prewarmTable () {
-        /*
-        прогреваем кэш
-        */
-        super.logging(
-                PostgresBufferMethods.PREWARM_TABLE
-                + " : "
-                + this.getSession().createQuery(
-                        PostgresBufferMethods.PREWARM_TABLE
-                ).getSingleResult()
-        );
-    }
-
-    @Override
-    public void insertTableContentToBuffer () {
-        final Transaction transaction = this.newTransaction();
-
-        /*
-        создаем расширение, меняем настройки pg_config и перезапускаем БД
-        */
-        super.logging(
-                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
-                        + " : "
-                        + this.getSession().createQuery(
-                                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
-                ).getSingleResult()
-        );
-
-        /*
-        загружаем список таблиц в буферы
-        */
-        super.analyze(
-                super.getTablesList(),
-                table -> super.logging(
-                        table
-                                + " was inserted into buffer: "
-                                + this.getSession().createQuery(
-                                PostgresBufferMethods.INSERT_TABLE_CONTENT_INTO_BUFFER.formatted(
-                                        table
-                                )
-                        ).getQueryString()
-                )
-        );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 
     private void checkBatchLimit () {
@@ -508,10 +429,13 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     */
     @Override
     public synchronized void close () {
+        PostgresVacuumImpl.generate( this.getSession() );
+
         this.getSession().clear();
         this.getSession().close();
         this.getSessionFactory().close();
         this.getValidatorFactory().close();
+
         StandardServiceRegistryBuilder.destroy( this.getRegistry() );
 
         CONNECTOR = null;
