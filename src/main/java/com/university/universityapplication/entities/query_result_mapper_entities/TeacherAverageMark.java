@@ -39,4 +39,13 @@ public final class TeacherAverageMark {
     public void setAverageMarkNaming( final String averageMarkNaming ) {
         this.averageMarkNaming = averageMarkNaming;
     }
+
+    @Override
+    public String toString () {
+        return this.getAverageMarkNaming()
+                + " : "
+                + this.getAverageMark()
+                + " : "
+                + this.getLessonCount();
+    }
 }

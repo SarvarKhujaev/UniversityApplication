@@ -1,6 +1,8 @@
 package com.university.universityapplication.database;
 
+import com.university.universityapplication.entities.query_result_mapper_entities.BufferAnalyzeResultMapper;
 import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.interfaces.PostgresBufferControlInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
@@ -29,7 +31,9 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
         this.session = session;
 
         this.prewarmTable();
+        this.createExtensionForBuffer();
         this.insertTableContentToBuffer();
+        this.calculateBufferAnalyze();
     }
 
     @Override
@@ -47,6 +51,43 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
     }
 
     @Override
+    public void calculateBufferAnalyze () {
+        super.analyze(
+                super.getTablesList(),
+                table -> super.analyze(
+                        this.getSession().createNativeQuery(
+                                        PostgresBufferMethods.SELECT_BUFFER_ANALYZE_FOR_TABLE.formatted(
+                                                PostgreSqlSchema.UNIVERSITY,
+                                                table
+                                        ),
+                                        BufferAnalyzeResultMapper.class
+                                ).addScalar( "bufferid", Long.class )
+                                .addScalar( "usagecount", Long.class )
+                                .addScalar( "reldatabase", Long.class )
+                                .addScalar( "relfilenode", Long.class )
+                                .addScalar( "reltablespace", Long.class )
+                                .addScalar( "relforknumber", Long.class )
+                                .addScalar( "relblocknumber", Long.class )
+                                .addScalar( "pinning_backends", Long.class )
+                                .addScalar( "isdirty", Character.class )
+                                .getResultList(),
+                        bufferAnalyzeResultMapper -> super.logging( bufferAnalyzeResultMapper.toString() )
+                )
+        );
+    }
+
+    @Override
+    public void createExtensionForBuffer () {
+        super.logging(
+                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
+                        + " : "
+                        + this.getSession().createNativeQuery(
+                        PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
+                ).getQueryString()
+        );
+    }
+
+    @Override
     public void insertTableContentToBuffer () {
         final Transaction transaction = this.getSession().beginTransaction();
 
@@ -56,9 +97,9 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
         super.logging(
                 PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
                         + " : "
-                        + this.getSession().createQuery(
-                        PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
-                ).getSingleResult()
+                        + this.getSession().createNativeQuery(
+                                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
+                ).getQueryString()
         );
 
         /*
@@ -68,8 +109,8 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
                 super.getTablesList(),
                 table -> super.logging(
                         table
-                                + " was inserted into buffer: "
-                                + this.getSession().createQuery(
+                        + " was inserted into buffer: "
+                        + this.getSession().createQuery(
                                 PostgresBufferMethods.INSERT_TABLE_CONTENT_INTO_BUFFER.formatted(
                                         table
                                 )

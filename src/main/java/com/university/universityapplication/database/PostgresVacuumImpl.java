@@ -37,8 +37,8 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
                 super.getTablesList(),
                 table -> super.logging(
                         table
-                                + " was cleaned: "
-                                + this.getSession().createNativeQuery(
+                        + " was cleaned: "
+                        + this.getSession().createNativeQuery(
                                 MessageFormat.format(
                                         """
                                         VACUUM( {0}, {1} ) {2}.{3}

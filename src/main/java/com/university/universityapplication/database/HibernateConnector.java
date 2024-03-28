@@ -2,8 +2,6 @@ package com.university.universityapplication.database;
 
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
-import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
-import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
 import com.university.universityapplication.inspectors.Archive;
 import com.university.universityapplication.entities.*;
@@ -162,9 +160,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 .getSessionFactory()
                 .getStatistics()
                 .getDomainDataRegionStatistics(
-                        super.generateCacheName(
-                                PostgreSqlTables.STUDENTS
-                        )
+                        super.generateCacheName()
                 );
 
         super.logging(
@@ -196,6 +192,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             this.getSession().persist( student );
 
             transaction.commit();
+
+            super.logging( transaction );
         } else {
             super.analyze(
                     violations,
@@ -216,6 +214,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             this.getSession().save( teacher );
 
             transaction.commit();
+
+            super.logging( transaction );
         } else {
             super.analyze(
                     violations,
@@ -236,6 +236,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             this.getSession().persist( group );
 
             transaction.commit();
+
+            super.logging( transaction );
         } else {
             super.analyze(
                     violations,
@@ -245,6 +247,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     }
 
     public void insertStudents () {
+        final Transaction transaction = this.newTransaction();
+
         final List< EducationDirection > educationDirectionList = this.getSession().createQuery(
                 "FROM EDUCATION_DIRECTIONS"
         ).getResultList();
@@ -265,6 +269,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
 
             this.save( student );
         }
+
+        transaction.commit();
+
+        super.logging( transaction );
     }
 
     public void insertTeachers () {
@@ -320,6 +328,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         }
 
         transaction.commit();
+        super.logging( transaction );
     }
 
     public void save () {
@@ -412,16 +421,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 .setCacheable( true )
                 .setCacheMode( CacheMode.GET )
                 .setCacheRegion(
-                        super.generateCacheName( PostgreSqlSchema.UNIVERSITY )
+                        super.generateCacheName()
                 ).getSingleResult();
 
-        System.out.println(
-                teacherAverageMark.getAverageMarkNaming()
-                + " : "
-                + teacherAverageMark.getAverageMark()
-                + " : "
-                + teacherAverageMark.getLessonCount()
-        );
+        super.logging( teacherAverageMark.toString() );
     }
 
     /*

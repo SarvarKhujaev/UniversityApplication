@@ -26,7 +26,7 @@ public class LogInspector extends TimeInspector {
         return this.LOGGER;
     }
 
-    protected void logging ( final Class clazz ) {
+    protected void logging ( final Class<?> clazz ) {
         this.getLOGGER().info( clazz.getName() + " was created at: " + super.newDate() );
     }
 

@@ -47,12 +47,16 @@ public final class PostgresBufferMethods {
     */
     public static final String CREATE_EXTENSION_FOR_BUFFER_WARMING = """
             CREATE EXTENSION IF NOT EXISTS pg_prewarm; -- создаем расширение
-            SET shared_preload_libraries to 'pg_prewarm'; -- меняем настройки кластера, только в рамках сессии
+            -- SET shared_preload_libraries to 'pg_prewarm'; -- меняем настройки кластера, только в рамках сессии
             SELECT pg_reload_conf();
             """;
 
     /*
     возвращает данные о потреблении буфера для конкретной таблицы
     */
-    public static final String SELECT_BUFFER_ANALYZE_FOR_TABLE = "SELECT * FROM pg_buffercache_v WHERE relname= '%s';";
+    public static final String SELECT_BUFFER_ANALYZE_FOR_TABLE = """
+            SELECT *
+            FROM pg_buffercache
+            WHERE relfilenode = pg_relation_filenode('%s.%s');
+            """;
 }

@@ -1,8 +1,6 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.UniversityApplication;
-
 import org.hibernate.cfg.Environment;
 import java.util.Map;
 
@@ -82,7 +80,7 @@ public class Archive extends LogInspector {
         Otherwise, it is safe to enable this which will allow Hibernate to still batch the DML for versioned entities
         and still use the returned row counts for optimistic lock checks. Since 5.0, it defaults to true.
         Previously (versions 3.x and 4.x), it used to be false.
-         */
+        */
         this.dbSettings.put( Environment.BATCH_VERSIONED_DATA, true );
 
         this.dbSettings.put( Environment.ORDER_INSERTS, true );
@@ -99,12 +97,12 @@ public class Archive extends LogInspector {
         /*
         Optimizes second-level cache operations to minimize writes, at the cost of more frequent reads.
         Providers typically set this appropriately.
-         */
+        */
         this.dbSettings.put( Environment.USE_MINIMAL_PUTS, true );
 
         /*
         Defines a name to be used as a prefix to all second-level cache region names.
-         */
+        */
         this.dbSettings.put( Environment.CACHE_REGION_PREFIX, "hibernate" );
 
         /*
@@ -112,12 +110,10 @@ public class Archive extends LogInspector {
         By default, if the currently configured RegionFactory is not the NoCachingRegionFactory,
         then the second-level cache is going to be enabled.
         Otherwise, the second-level cache is disabled.
-         */
+        */
         this.dbSettings.put(
                 Environment.USE_SECOND_LEVEL_CACHE,
-                super.generateCacheName(
-                        PostgreSqlSchema.UNIVERSITY
-                )
+                true
         );
 
         /*
@@ -126,7 +122,7 @@ public class Archive extends LogInspector {
         Hibernate can even be configured to expose these statistics via JMX.
 
         This way, you can get access to the Statistics class which comprises all sort of second-level cache metrics.
-         */
+        */
         this.dbSettings.put( Environment.GENERATE_STATISTICS, true );
     }
 }

@@ -1,4 +1,4 @@
-package com.university.universityapplication;
+package com.university.universityapplication.constans.postgres_constants;
 
 /*
 Для других операций с индексом используются команды:

@@ -45,7 +45,7 @@ public class CollectionsInspector extends DataValidateInspector {
         );
     }
 
-    public synchronized <T> void analyze (
+    protected synchronized <T> void analyze (
             final Collection<T> someList,
             final Consumer<T> someConsumer
     ) {

@@ -5,18 +5,11 @@ import com.university.universityapplication.constans.postgres_constants.PostgreS
 public class StringOperations extends CollectionsInspector {
     protected StringOperations () {}
 
-    protected StringBuilder newStringBuilder ( final String s ) {
-        return new StringBuilder( s );
-    }
-
-    protected String generateCacheName (
-            final String table
-    ) {
+    protected String generateCacheName () {
         return String.join(
                 ".",
                 "hibernate.cache",
-                PostgreSqlSchema.ENTITIES.toLowerCase(),
-                table.toLowerCase()
+                PostgreSqlSchema.UNIVERSITY.toLowerCase()
         );
     }
 }
