@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.postgres_constants;
 
 /*
 VACUUM высвобождает пространство, занимаемое мёртвыми строками.

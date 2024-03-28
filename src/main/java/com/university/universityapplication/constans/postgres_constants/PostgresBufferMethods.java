@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.postgres_constants;
 
 import java.text.MessageFormat;
 
@@ -9,12 +9,12 @@ public final class PostgresBufferMethods {
     Список страниц сбрасывается в файл autoprewarm.blocks.
     Чтобы его увидеть, можно просто подождать,
     пока процесс autoprewarm master отработает в первый раз, но мы инициируем это вручную:
-     */
+    */
     public static final String PREWARM_TABLE = "SELECT autoprewarm_dump_now()";
 
     /*
     Если мы предполагаем, что все ее содержимое очень важно, мы можем прочитать ее в буферный кеш с помощью вызова следующей функции:
-     */
+    */
     public static final String INSERT_TABLE_CONTENT_INTO_BUFFER = MessageFormat.format(
             "SELECT {0}( '%s' )",
             PG_PREWARM
@@ -37,10 +37,18 @@ public final class PostgresBufferMethods {
     Поле рестарта, если не менялось значение параметра pg_prewarm.autoprewarm, будет автоматически запущен фоновый процесс autoprewarm master,
     который раз в pg_prewarm.autoprewarm_interval будет сбрасывать на диск список страниц,
     находящихся в кеше (не забудьте учесть новый процесс при установке max_parallel_processes).
+
+    тобы изменить текущие значения с сохранением значения нам
+    необходимо внести изменения в файл с параметрами postgresql.conf или
+    выполнить SQL команду alter system set <name>=’<value>’, которая записывает
+    параметры в postgresql.auto.conf, но не применяет их.
+    Параметры из обоих вариантов применятся после вызова:
+        SELECT pg_reload_conf();
     */
     public static final String CREATE_EXTENSION_FOR_BUFFER_WARMING = """
             CREATE EXTENSION IF NOT EXISTS pg_prewarm; -- создаем расширение
-            ALTER SYSTEM SET shared_preload_libraries = 'pg_prewarm'; -- меняем настройки кластера
+            SET shared_preload_libraries to 'pg_prewarm'; -- меняем настройки кластера, только в рамках сессии
+            SELECT pg_reload_conf();
             """;
 
     /*

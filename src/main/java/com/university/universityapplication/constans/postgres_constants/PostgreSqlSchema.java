@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.postgres_constants;
 
 public final class PostgreSqlSchema {
     public static final String ENTITIES = "ENTITIES";

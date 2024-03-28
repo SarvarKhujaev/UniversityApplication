@@ -1,6 +1,6 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.PostgreSqlSchema;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.UniversityApplication;
 
 import org.hibernate.cfg.Environment;

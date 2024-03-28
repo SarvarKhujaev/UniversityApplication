@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.postgres_constants;
 
 /*
 https://stackoverflow.com/questions/31983454/hibernate-check-annotation

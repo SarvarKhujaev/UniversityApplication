@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.postgres_constants;
 
 /*
 https://www.postgresql.org/docs/13/sql-checkpoint.html

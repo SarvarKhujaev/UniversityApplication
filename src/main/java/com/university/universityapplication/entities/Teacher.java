@@ -1,9 +1,13 @@
 package com.university.universityapplication.entities;
 
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
+import com.university.universityapplication.constans.postgres_constants.PostgresConstraints;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
+import com.university.universityapplication.constans.entities_constants.ErrorMessages;
 import com.university.universityapplication.inspectors.TimeInspector;
-import com.university.universityapplication.constans.*;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.PartitionKey;

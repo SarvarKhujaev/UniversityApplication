@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.postgres_constants;
 
 public final class PostgreSqlTables {
     public static final String LOG = "LOGS";

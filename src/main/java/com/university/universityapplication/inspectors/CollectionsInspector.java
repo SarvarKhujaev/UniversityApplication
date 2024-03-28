@@ -1,6 +1,6 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.PostgreSqlTables;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

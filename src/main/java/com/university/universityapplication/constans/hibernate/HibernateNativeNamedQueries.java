@@ -31,12 +31,12 @@ public final class HibernateNativeNamedQueries {
 
                 FROM university.teachers t -- находим самого учителя
 
-                JOIN university.groups g ON t.id = :teacher_id
-                AND g.teacher_id = :teacher_id -- находим все группы за которые он отвечает
+                INNER JOIN university.groups g ON g.teacher_id = :teacher_id -- находим все группы за которые он отвечает
 
-                JOIN university.lessons l ON l.group_id = g.id -- находим все занятия в этих группах
+                INNER JOIN university.lessons l ON l.group_id = g.id -- находим все занятия в этих группах
 
-                JOIN university.comments c ON c.lesson_id = l.id -- находим вс комметарии к этим занятиям
+                INNER JOIN university.comments c ON c.lesson_id = l.id -- находим вс комметарии к этим занятиям
+
                 WHERE g.teacher_id = :teacher_id
             );
             """;

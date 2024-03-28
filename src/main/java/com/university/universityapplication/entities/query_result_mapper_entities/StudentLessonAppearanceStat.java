@@ -1,6 +1,6 @@
 package com.university.universityapplication.entities.query_result_mapper_entities;
 
-import com.university.universityapplication.constans.LessonAppearanceTypes;
+import com.university.universityapplication.constans.entities_constants.LessonAppearanceTypes;
 
 public final class StudentLessonAppearanceStat {
     public long getLessonsCount() {

@@ -1,9 +1,9 @@
 //package com.university.universityapplication.entities;
 //
-//import com.university.universityapplication.constans.PostgreSqlFunctions;
-//import com.university.universityapplication.constans.PostgreSqlTables;
+//import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
+//import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 //import com.university.universityapplication.inspectors.TimeInspector;
-//import com.university.universityapplication.constans.ErrorMessages;
+//import com.university.universityapplication.constans.entiti_constants.ErrorMessages;
 //
 //import jakarta.validation.constraints.NotNull;
 //import jakarta.persistence.*;

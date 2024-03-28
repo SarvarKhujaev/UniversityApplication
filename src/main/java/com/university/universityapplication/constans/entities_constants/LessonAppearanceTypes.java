@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans;
+package com.university.universityapplication.constans.entities_constants;
 
 /*
 хранит данные о времени посещении урока

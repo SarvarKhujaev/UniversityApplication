@@ -1,12 +1,12 @@
 package com.university.universityapplication.database;
 
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
+import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
+import com.university.universityapplication.constans.postgres_constants.PostgresVacuumMethods;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
-import com.university.universityapplication.constans.PostgresBufferMethods;
-import com.university.universityapplication.constans.PostgresVacuumMethods;
-import com.university.universityapplication.constans.PostgreSqlTables;
-import com.university.universityapplication.constans.PostgreSqlSchema;
 import com.university.universityapplication.inspectors.Archive;
 import com.university.universityapplication.entities.*;
 
@@ -139,17 +139,35 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     @Override
     public void prewarmTable () {
         /*
-        загружаем список таблиц
+        прогреваем кэш
         */
-        this.getSession().createQuery(
+        super.logging(
                 PostgresBufferMethods.PREWARM_TABLE
-        ).getSingleResult();
+                + " : "
+                + this.getSession().createQuery(
+                        PostgresBufferMethods.PREWARM_TABLE
+                ).getSingleResult()
+        );
     }
 
     @Override
     public void insertTableContentToBuffer () {
         final Transaction transaction = this.newTransaction();
 
+        /*
+        создаем расширение, меняем настройки pg_config и перезапускаем БД
+        */
+        super.logging(
+                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
+                        + " : "
+                        + this.getSession().createQuery(
+                                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
+                ).getSingleResult()
+        );
+
+        /*
+        загружаем список таблиц в буферы
+        */
         super.analyze(
                 super.getTablesList(),
                 table -> super.logging(
@@ -217,7 +235,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     Hibernate can even be configured to expose these statistics via JMX.
 
     This way, you can get access to the Statistics class which comprises all sort of second-level cache metrics.
-     */
+    */
     public void readCacheStatistics () {
         final CacheRegionStatistics regionStatistics = this.getSession()
                 .getSessionFactory()
@@ -490,7 +508,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     */
     @Override
     public synchronized void close () {
-        this.vacuumTable();
         this.getSession().clear();
         this.getSession().close();
         this.getSessionFactory().close();

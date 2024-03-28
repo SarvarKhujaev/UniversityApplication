@@ -1,7 +1,11 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
+import com.university.universityapplication.constans.postgres_constants.PostgresConstraints;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
+import com.university.universityapplication.constans.entities_constants.ErrorMessages;
 import com.university.universityapplication.inspectors.TimeInspector;
-import com.university.universityapplication.constans.*;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

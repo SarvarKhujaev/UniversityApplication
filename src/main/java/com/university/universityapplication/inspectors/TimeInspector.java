@@ -1,6 +1,6 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.LessonAppearanceTypes;
+import com.university.universityapplication.constans.entities_constants.LessonAppearanceTypes;
 import java.util.Date;
 
 public class TimeInspector extends StringOperations {
