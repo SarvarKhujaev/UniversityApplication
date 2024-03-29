@@ -433,6 +433,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     @Override
     public synchronized void close () {
         PostgresVacuumImpl.generate( this.getSession() );
+        PostgresIndexesRegister.generate( this.getSession() );
 
         this.getSession().clear();
         this.getSession().close();

@@ -45,7 +45,7 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
                 PostgresBufferMethods.PREWARM_TABLE
                         + " : "
                         + this.getSession().createQuery(
-                        PostgresBufferMethods.PREWARM_TABLE
+                                PostgresBufferMethods.PREWARM_TABLE
                 ).getSingleResult()
         );
     }
@@ -82,7 +82,7 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
                 PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
                         + " : "
                         + this.getSession().createNativeQuery(
-                        PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
+                                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
                 ).getQueryString()
         );
     }

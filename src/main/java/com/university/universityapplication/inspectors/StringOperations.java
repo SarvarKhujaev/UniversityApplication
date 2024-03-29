@@ -5,7 +5,7 @@ import com.university.universityapplication.constans.postgres_constants.PostgreS
 public class StringOperations extends CollectionsInspector {
     protected StringOperations () {}
 
-    protected String generateCacheName () {
+    protected final String generateCacheName () {
         return String.join(
                 ".",
                 "hibernate.cache",

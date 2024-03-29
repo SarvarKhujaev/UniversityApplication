@@ -1,8 +1,9 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraintsValues;
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraints;
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
-import com.university.universityapplication.constans.postgres_constants.PostgresConstraints;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
@@ -31,9 +32,11 @@ import java.util.List;
 )
 @Check(
         name = PostgresConstraints.TEACHER_TABLE_CONSTRAINT,
-        constraints = """
-                age >= 18 AND age <= 80
-                """
+        constraints = PostgresConstraintsValues.TEACHER_TABLE_CONSTRAINT_VALUE
+)
+@Check(
+        name = PostgresConstraints.PHONE_NUMBER_CONSTRAINT,
+        constraints = PostgresConstraintsValues.PHONE_NUMBER_CONSTRAINT_VALUE
 )
 @SqlResultSetMappings(
         @SqlResultSetMapping(
@@ -130,6 +133,14 @@ public final class Teacher extends TimeInspector {
         this.fatherName = fatherName;
     }
 
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
+    public void setPhoneNumber ( final String phoneNumber ) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getStudentShortDescription() {
         return this.teacherShortDescription;
     }
@@ -203,6 +214,23 @@ public final class Teacher extends TimeInspector {
     )
     @PartitionKey
     private String email;
+
+    @Size(
+            min = 13,
+            max = 13,
+            message = ErrorMessages.VALUE_OUT_OF_RANGE
+    )
+    @NotNull( message = ErrorMessages.NULL_VALUE )
+    @NotBlank( message = ErrorMessages.NULL_VALUE )
+    @Column(
+            columnDefinition = "VARCHAR( 13 )",
+            nullable = false,
+            unique = true,
+            length = 13,
+            name = "phone_number"
+    )
+    @PartitionKey
+    private String phoneNumber;
 
     @Size(
             min = 5,

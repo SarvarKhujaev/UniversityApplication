@@ -1,5 +1,6 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.entities.*;
 
@@ -10,19 +11,25 @@ import java.util.*;
 public class CollectionsInspector extends DataValidateInspector {
     protected CollectionsInspector () {}
 
-    protected <T> List<T> emptyList () {
+    protected final <T> List<T> emptyList () {
         return Collections.emptyList();
     }
 
-    protected  <T> ArrayList<T> newList () {
+    protected final <T> ArrayList<T> newList () {
         return new ArrayList<>();
     }
 
-    protected <T, V> Map<T, V> newMap () {
+    protected final <T> List<T> newList (
+            final T ... values
+    ) {
+        return Arrays.asList( values );
+    }
+
+    protected final <T, V> Map<T, V> newMap () {
         return new HashMap<>();
     }
 
-    protected List< String > getTablesList () {
+    protected final List< String > getTablesList () {
         return List.of(
                 PostgreSqlTables.GROUPS,
                 PostgreSqlTables.LESSONS,
@@ -33,7 +40,7 @@ public class CollectionsInspector extends DataValidateInspector {
         );
     }
 
-    protected List< Class<?> > getClassesReferences () {
+    protected final List< Class<?> > getClassesReferences () {
         return List.of(
                 Group.class,
                 Lesson.class,
@@ -45,25 +52,44 @@ public class CollectionsInspector extends DataValidateInspector {
         );
     }
 
-    protected synchronized <T> void analyze (
+    protected final List< String > getIndexCreateQueries () {
+        return List.of(
+                PostgresIndexesCreateQueries.UNIVERSITY_TEACHER_FIO_INDEX,
+                PostgresIndexesCreateQueries.UNIVERSITY_TEACHER_EMAIL_INDEX,
+
+                PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_FIO_INDEX,
+                PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_EMAIL_INDEX,
+
+                PostgresIndexesCreateQueries.UNIVERSITY_GROUPS_GROUP_NAME_INDEX,
+
+                PostgresIndexesCreateQueries.UNIVERSITY_COMMENT_MARK_INDEX,
+
+                PostgresIndexesCreateQueries.UNIVERSITY_LESSON_LESSON_NAME_INDEX,
+                PostgresIndexesCreateQueries.UNIVERSITY_LESSON_LESSON_STATUS_INDEX,
+
+                PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_APPEARANCE_IN_LESSONS_TYPES_INDEX
+        );
+    }
+
+    protected final synchronized <T> void analyze (
             final Collection<T> someList,
             final Consumer<T> someConsumer
     ) {
         someList.forEach( someConsumer );
     }
 
-    protected synchronized <T, V> void analyze (
+    protected final synchronized <T, V> void analyze (
             final Map< T, V > someList,
             final BiConsumer<T, V> someConsumer
     ) {
         someList.forEach( someConsumer );
     }
 
-    protected <T> boolean isCollectionNotEmpty ( final Collection<T> collection ) {
+    protected final <T> boolean isCollectionNotEmpty ( final Collection<T> collection ) {
         return super.objectIsNotNull( collection ) && !collection.isEmpty();
     }
 
-    protected <T, V> boolean isCollectionNotEmpty ( final Map<T, V> collection ) {
+    protected final <T, V> boolean isCollectionNotEmpty ( final Map<T, V> collection ) {
         return super.objectIsNotNull( collection ) && !collection.isEmpty();
     }
 }

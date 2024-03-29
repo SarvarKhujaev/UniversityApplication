@@ -1,22 +1,9 @@
-package com.university.universityapplication.constans.postgres_constants;
+package com.university.universityapplication.constans.postgres_constants.postgres_index_constants;
 
 /*
 хранит все кинфигурации для индексов PostgreSQL
  */
 public final class PostgresIndexParams {
-    /*
-    CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] name ]
-    ON [ ONLY ] table_name [ USING method ]
-    ( { column_name | ( expression ) } [ COLLATE collation ] [ opclass [ (
-    opclass_parameter = value [, ... ] ) ] ] [ ASC | DESC ] [ NULLS { FIRST |
-    LAST } ] [, ...] )
-    [ INCLUDE ( column_name [, ...] ) ]
-    [ WITH ( storage_parameter [= value] [, ... ] ) ]
-    [ TABLESPACE tablespace_name ]
-    [ WHERE predicate ]
-    */
-    public static final String CREATE_INDEX = "CREATE INDEX IF NOT EXISTS %s";
-
     /*
     225
     Рассмотрим основные параметры:
@@ -45,7 +32,7 @@ public final class PostgresIndexParams {
         индекса. Например, таким образом запрос из предыдущей главы мы бы
         ускорили в десятки раз!!!
     */
-    public static final String INCLUDE = "INCLUDE";
+    public static final String INCLUDE = "INCLUDE ( %s )";
 
     /*
     name - имя создаваемого индекса. Указание схемы при этом не
@@ -116,6 +103,64 @@ public final class PostgresIndexParams {
 
     /*
     REINDEX INDEX CONCURRENTLY table_name
+
+    INDEX
+        Recreate the specified index. This form of REINDEX cannot be executed inside a transaction block when used with a partitioned index.
+
+    TABLE
+        Recreate all indexes of the specified table. If the table has a secondary “TOAST” table, that is reindexed as well.
+        This form of REINDEX cannot be executed inside a transaction block when used with a partitioned table.
+
+    SCHEMA
+        Recreate all indexes of the specified schema. If a table of this schema has a secondary “TOAST” table, that is reindexed as well.
+        Indexes on shared system catalogs are also processed. This form of REINDEX cannot be executed inside a transaction block.
+
+    DATABASE
+        Recreate all indexes within the current database. Indexes on shared system catalogs are also processed.
+        This form of REINDEX cannot be executed inside a transaction block.
+
+    SYSTEM
+        Recreate all indexes on system catalogs within the current database.
+        Indexes on shared system catalogs are included. Indexes on user tables are not processed.
+        This form of REINDEX cannot be executed inside a transaction block.
+
+    name
+        The name of the specific index, table, or database to be reindexed.
+        Index and table names can be schema-qualified.
+        Presently, REINDEX DATABASE and REINDEX SYSTEM can only reindex the current database, so their parameter must match the current database's name.
+
+    CONCURRENTLY
+        When this option is used, PostgreSQL will rebuild the index without taking any locks that prevent concurrent inserts,
+        updates, or deletes on the table; whereas a standard index rebuild locks out writes (but not reads) on the table until it's done.
+        There are several caveats to be aware of when using this option — see Rebuilding Indexes Concurrently below.
+        For temporary tables, REINDEX is always non-concurrent, as no other session can access them, and non-concurrent reindex is cheaper.
+
+    TABLESPACE
+        Specifies that indexes will be rebuilt on a new tablespace.
+
+    VERBOSE
+        Prints a progress report as each index is reindexed.
+
+    boolean
+        Specifies whether the selected option should be turned on or off.
+        You can write TRUE, ON, or 1 to enable the option, and FALSE, OFF, or 0 to disable it.
+        The boolean value can also be omitted, in which case TRUE is assumed.
+
+    new_tablespace
+        The tablespace where indexes will be rebuilt.
     */
-    public static final String REINDEX = "REINDEX";
+    public static final String REINDEX = "REINDEX CONCURRENTLY INDEX %s;";
+
+    /*
+    CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] name ]
+    ON [ ONLY ] table_name [ USING method ]
+    ( { column_name | ( expression ) } [ COLLATE collation ] [ opclass [ (
+    opclass_parameter = value [, ... ] ) ] ] [ ASC | DESC ] [ NULLS { FIRST |
+    LAST } ] [, ...] )
+    [ INCLUDE ( column_name [, ...] ) ]
+    [ WITH ( storage_parameter [= value] [, ... ] ) ]
+    [ TABLESPACE tablespace_name ]
+    [ WHERE predicate ]
+    */
+    public static final String CREATE_INDEX = "CREATE INDEX IF NOT EXISTS %s ON %s.%s( %s )";
 }

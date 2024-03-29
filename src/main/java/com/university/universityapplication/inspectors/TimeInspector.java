@@ -6,11 +6,11 @@ import java.util.Date;
 public class TimeInspector extends StringOperations {
     protected TimeInspector () {}
 
-    protected Date newDate () {
+    protected final Date newDate () {
         return new Date();
     }
 
-    protected Date newDate (
+    protected final Date newDate (
             final long timeInterval
     ) {
         return new Date( timeInterval );
@@ -20,7 +20,7 @@ public class TimeInspector extends StringOperations {
     когда студент присоединяеться к занятию,
     проверяем пришел ли он вовремя или опоздал
      */
-    protected LessonAppearanceTypes getLessonAppearanceTypesDueToAppearanceTime (
+    protected final LessonAppearanceTypes getLessonAppearanceTypesDueToAppearanceTime (
             final Date studentAppearanceDate,
             final Date lessonStartDate
     ) {

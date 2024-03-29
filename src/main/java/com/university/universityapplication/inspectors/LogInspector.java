@@ -26,19 +26,19 @@ public class LogInspector extends TimeInspector {
         return this.LOGGER;
     }
 
-    protected void logging ( final Class<?> clazz ) {
+    protected final void logging ( final Class<?> clazz ) {
         this.getLOGGER().info( clazz.getName() + " was created at: " + super.newDate() );
     }
 
-    protected void logging ( final Object o ) {
+    protected final void logging ( final Object o ) {
         this.getLOGGER().info( o.getClass().getName() + " was closed successfully at: " + super.newDate() );
     }
 
-    protected void logging ( final String message ) {
+    protected final void logging ( final String message ) {
         this.getLOGGER().info( message );
     }
 
-    protected void logging ( final Transaction transaction ) {
+    protected final void logging ( final Transaction transaction ) {
         this.getLOGGER().info( transaction.getStatus() );
     }
 }

@@ -1,7 +1,8 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraintsValues;
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraints;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
-import com.university.universityapplication.constans.postgres_constants.PostgresConstraints;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
@@ -34,9 +35,7 @@ import java.util.List;
 )
 @Check(
         name = PostgresConstraints.GROUP_TABLE_CONSTRAINT,
-        constraints = """
-                max_students_number >= 3 AND students_number >= 0 AND students_number < max_students_number
-                """
+        constraints = PostgresConstraintsValues.GROUP_TABLE_CONSTRAINT_VALUE
 )
 @org.hibernate.annotations.NamedNativeQueries(
         value = {
@@ -182,7 +181,7 @@ public final class Group extends TimeInspector {
     private Teacher teacher;
 
     /*
-    название направления по которым проводятся занятия
+    название направления по которому проводятся занятия
     */
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Immutable

@@ -1,7 +1,8 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraintsValues;
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraints;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
-import com.university.universityapplication.constans.postgres_constants.PostgresConstraints;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
@@ -32,9 +33,7 @@ import java.util.Date;
 )
 @Check(
         name = PostgresConstraints.COMMENT_TABLE_CONSTRAINT,
-        constraints = """
-                mark >= 1 AND mark <= 5
-                """
+        constraints = PostgresConstraintsValues.COMMENT_TABLE_CONSTRAINT_VALUE
 )
 public final class Comment extends TimeInspector {
     public Long getId() {

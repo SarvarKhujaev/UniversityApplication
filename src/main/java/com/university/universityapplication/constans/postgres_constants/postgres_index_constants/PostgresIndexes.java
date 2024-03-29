@@ -1,4 +1,4 @@
-package com.university.universityapplication.constans.postgres_constants;
+package com.university.universityapplication.constans.postgres_constants.postgres_index_constants;
 
 /*
 Для других операций с индексом используются команды:
@@ -61,8 +61,7 @@ DELETE, INSERT
     Создаём корзины, куда складываем значения по хэшу поля,
     соответственно, всегда знаем, в какой корзине находятся строки. При
     совпадении хэша у разных строк идём по пути полного перебора строк в корзине.
-    Сложность алгоритма при этом О(1) - поиск за константное время -
-    быстрее О(log n).
+    Сложность алгоритма при этом О(1) - поиск за константное время - быстрее О(log n).
 */
 public final class PostgresIndexes {
     /*
