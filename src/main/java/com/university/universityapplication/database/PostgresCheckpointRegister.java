@@ -4,7 +4,6 @@ import com.university.universityapplication.constans.postgres_constants.Postgres
 import com.university.universityapplication.interfaces.PostgresCheckpointMethodsInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
-import com.university.universityapplication.interfaces.ServiceCommonMethods;
 import org.hibernate.Session;
 
 /*
