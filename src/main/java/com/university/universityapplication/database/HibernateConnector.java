@@ -432,8 +432,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     */
     @Override
     public synchronized void close () {
-        PostgresVacuumImpl.generate( this.getSession() );
-        PostgresIndexesRegister.generate( this.getSession() );
+        this.saveAllChangesAndFlushData();
 
         this.getSession().clear();
         this.getSession().close();
@@ -445,5 +444,15 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         CONNECTOR = null;
 
         super.logging( this );
+    }
+
+    /*
+    при помощи FLUSH сливае все изменения в БД
+    */
+    @Override
+    public void saveAllChangesAndFlushData() {
+        PostgresVacuumImpl.generate( this.getSession() );
+        PostgresIndexesRegister.generate( this.getSession() );
+        PostgresCheckpointRegister.generate( this.getSession() );
     }
 }

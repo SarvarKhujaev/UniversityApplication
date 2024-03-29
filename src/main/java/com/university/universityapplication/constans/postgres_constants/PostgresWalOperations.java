@@ -22,6 +22,6 @@ public final class PostgresWalOperations {
     If executed during recovery, the CHECKPOINT command will force a restartpoint rather than writing a new checkpoint.
 
     Only superusers can call CHECKPOINT.
-     */
-    public static final String CHECKPOINT = "CHECKPOINT";
+    */
+    public static final String CHECKPOINT = "CHECKPOINT;";
 }
