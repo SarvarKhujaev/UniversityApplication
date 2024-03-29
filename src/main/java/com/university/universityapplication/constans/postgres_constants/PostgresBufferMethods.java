@@ -21,11 +21,6 @@ public final class PostgresBufferMethods {
     );
 
     /*
-    создает расширение для работы и аналитики буфера кэширования
-    */
-    public static final String CREATE_EXTENSION_FOR_BUFFER_READ = "CREATE EXTENSION pg_buffercache;";
-
-    /*
     После перезапуска сервера должно пройти некоторое время, чтобы кеш «прогрелся» — набрал актуальные активно использующиеся данные.
     Иногда может оказаться полезным сразу прочитать в кеш данные определенных таблиц, и для этого предназначено специальное расширение:
 
@@ -45,10 +40,8 @@ public final class PostgresBufferMethods {
     Параметры из обоих вариантов применятся после вызова:
         SELECT pg_reload_conf();
     */
-    public static final String CREATE_EXTENSION_FOR_BUFFER_WARMING = """
-            CREATE EXTENSION IF NOT EXISTS pg_prewarm; -- создаем расширение
-            -- SET shared_preload_libraries to 'pg_prewarm'; -- меняем настройки кластера, только в рамках сессии
-            SELECT pg_reload_conf();
+    public static final String SOFT_RELOAD_OF_CONFIGURATIONS = """
+            SELECT pg_reload_conf(); -- вариант мягкой перезагрузки конфигурации
             """;
 
     /*

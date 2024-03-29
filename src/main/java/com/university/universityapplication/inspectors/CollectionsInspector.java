@@ -1,5 +1,6 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_extensions.PostgresExtensions;
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.entities.*;
@@ -37,6 +38,14 @@ public class CollectionsInspector extends DataValidateInspector {
                 PostgreSqlTables.COMMENTS,
                 PostgreSqlTables.STUDENTS,
                 PostgreSqlTables.EDUCATION_DIRECTIONS
+        );
+    }
+
+    protected final List< String > getPostgresExtensions () {
+        return List.of(
+                PostgresExtensions.CREATE_EXTENSION_PG_PREWARM,
+                PostgresExtensions.CREATE_EXTENSION_FOR_BUFFER_READ,
+                PostgresExtensions.CREATE_EXTENSION_PG_STAT_STATEMENTS
         );
     }
 

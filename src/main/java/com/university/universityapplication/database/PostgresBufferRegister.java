@@ -31,7 +31,6 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
         this.session = session;
 
         this.prewarmTable();
-        this.createExtensionForBuffer();
         this.insertTableContentToBuffer();
         this.calculateBufferAnalyze();
     }
@@ -77,17 +76,6 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
     }
 
     @Override
-    public void createExtensionForBuffer () {
-        super.logging(
-                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
-                        + " : "
-                        + this.getSession().createNativeQuery(
-                                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_READ
-                ).getQueryString()
-        );
-    }
-
-    @Override
     public void insertTableContentToBuffer () {
         final Transaction transaction = this.getSession().beginTransaction();
 
@@ -95,10 +83,10 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
         создаем расширение, меняем настройки pg_config и перезапускаем БД
         */
         super.logging(
-                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
+                PostgresBufferMethods.SOFT_RELOAD_OF_CONFIGURATIONS
                         + " : "
                         + this.getSession().createNativeQuery(
-                                PostgresBufferMethods.CREATE_EXTENSION_FOR_BUFFER_WARMING
+                                PostgresBufferMethods.SOFT_RELOAD_OF_CONFIGURATIONS
                 ).getQueryString()
         );
 

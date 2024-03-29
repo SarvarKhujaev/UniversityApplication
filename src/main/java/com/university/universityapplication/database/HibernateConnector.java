@@ -1,6 +1,7 @@
 package com.university.universityapplication.database;
 
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
+import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
 import com.university.universityapplication.inspectors.Archive;
@@ -99,9 +100,34 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
          */
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
-        PostgresBufferRegister.generate( this.getSession() );
+        this.registerAllParams();
+
+        /*
+        меняем настройки кластера, только в рамках сессии
+        */
+        this.getSession().setProperty( "shared_preload_libraries", PostgresBufferMethods.PG_PREWARM );
 
         super.logging( this.getClass() );
+    }
+
+    /*
+    создаем и регистрируем все сервисы, параметры и расщирения
+    */
+    private void registerAllParams () {
+        /*
+        создаем все расширения
+        */
+        PostgresExtensionsRegister.generate( this.getSession() );
+
+        /*
+        создаем все индексы
+        */
+        PostgresIndexesRegister.generate( this.getSession() ).createIndex();
+
+        /*
+        создаем и прогреваем буферы кэша
+        */
+        PostgresBufferRegister.generate( this.getSession() );
     }
 
     private void checkBatchLimit () {
@@ -432,8 +458,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     */
     @Override
     public synchronized void close () {
-        this.saveAllChangesAndFlushData();
-
         this.getSession().clear();
         this.getSession().close();
         this.getSessionFactory().close();
@@ -444,15 +468,5 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         CONNECTOR = null;
 
         super.logging( this );
-    }
-
-    /*
-    при помощи FLUSH сливае все изменения в БД
-    */
-    @Override
-    public void saveAllChangesAndFlushData() {
-        PostgresVacuumImpl.generate( this.getSession() );
-        PostgresIndexesRegister.generate( this.getSession() );
-        PostgresCheckpointRegister.generate( this.getSession() );
     }
 }

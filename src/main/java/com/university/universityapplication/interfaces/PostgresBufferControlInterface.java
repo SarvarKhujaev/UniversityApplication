@@ -7,11 +7,6 @@ public interface PostgresBufferControlInterface {
     */
     void insertTableContentToBuffer ();
 
-    /*
-    используется для создания расширения pg_buffercache
-     */
-    void createExtensionForBuffer ();
-
     void calculateBufferAnalyze ();
 
     /*
