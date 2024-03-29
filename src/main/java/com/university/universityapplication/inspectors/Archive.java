@@ -20,11 +20,11 @@ public class Archive extends LogInspector {
     protected final int BATCH_SIZE = 30;
     protected final Map< String, Object > dbSettings;
 
-    protected void increaseOperationsCount () {
+    protected final void increaseOperationsCount () {
         this.operationsCount++;
     }
 
-    protected boolean isBatchLimitNotOvercrowded () {
+    protected final boolean isBatchLimitNotOvercrowded () {
         this.increaseOperationsCount();
         /*
         проверяем что количество операций не превысило
