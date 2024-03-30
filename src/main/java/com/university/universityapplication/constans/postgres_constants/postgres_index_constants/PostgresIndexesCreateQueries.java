@@ -15,14 +15,15 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.TEACHERS,
 
+                    PostgresIndexes.BTREE,
+
                     "name %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
             PostgresIndexParams.INCLUDE.formatted(
-                    "surname ASC, father_name ASC"
+                    "surname, father_name"
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -34,11 +35,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.TEACHERS,
 
+                    PostgresIndexes.BTREE,
+
                     "email %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -50,14 +52,15 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.STUDENTS,
 
+                    PostgresIndexes.BTREE,
+
                     "name %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
             PostgresIndexParams.INCLUDE.formatted(
-                    "surname ASC, father_name ASC"
+                    "surname, father_name"
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -69,11 +72,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.STUDENTS,
 
+                    PostgresIndexes.BTREE,
+
                     "email %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -85,11 +89,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.GROUPS,
 
+                    PostgresIndexes.BTREE,
+
                     "group_name %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -101,11 +106,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.COMMENTS,
 
+                    PostgresIndexes.BTREE,
+
                     "mark %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -117,11 +123,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.LESSONS,
 
+                    PostgresIndexes.BTREE,
+
                     "lesson_name %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -133,11 +140,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.LESSONS,
 
+                    PostgresIndexes.BTREE,
+
                     "lesson_status %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 
@@ -149,11 +157,12 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.STUDENT_APPEARANCE_IN_LESSONS,
 
+                    PostgresIndexes.BTREE,
+
                     "lesson_appearance_types %s".formatted(
                             PostgresIndexParams.ASC
                     )
             ),
-            PostgresIndexes.BTREE,
             ";"
     );
 }

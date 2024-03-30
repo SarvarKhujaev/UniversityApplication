@@ -91,11 +91,10 @@ public final class Lesson extends TimeInspector {
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @NotEmpty( message = ErrorMessages.NULL_VALUE )
     @Column(
-            name = "lesson_name",
             length = 50,
             nullable = false,
             updatable = false,
-            columnDefinition = "VARCHAR( 50 ) NOT NULL"
+            columnDefinition = "VARCHAR( 50 )"
     )
     @Immutable
     @PartitionKey

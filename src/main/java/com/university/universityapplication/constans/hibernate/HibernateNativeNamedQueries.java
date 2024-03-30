@@ -11,7 +11,7 @@ public final class HibernateNativeNamedQueries {
                     FROM university.STUDENTS_WITH_GROUPS_JOIN_TABLE s
                     WHERE s.student_id = :student_id
                 )
-            ORDER BY g.id
+            ORDER BY g.id;
             """;
 
     public static final String GET_TEACHER_AVERAGE_MARKS = "GET_TEACHER_AVERAGE_MARKS";
@@ -30,11 +30,13 @@ public final class HibernateNativeNamedQueries {
                 SELECT avg( c.mark ) AS averageMark, -- средняя оценка занятия
                 COUNT( l.id ) AS lessonCount -- количество занятий которые провел препод
 
-                FROM university.groups g ON g.teacher_id = :teacher_id -- находим все группы за которые он отвечает
+                FROM university.groups g
 
                 INNER JOIN university.lessons l ON l.group_id = g.id -- находим все занятия в этих группах
 
-                INNER JOIN university.comments c ON c.lesson_id = l.id -- находим вс комметарии к этим занятиям
+                INNER JOIN university.comments c ON c.lesson_id = l.id -- находим всe комметарии к этим занятиям
+
+                WHERE g.teacher_id = 5 -- находим все группы за которые он отвечает
             );
             """;
 

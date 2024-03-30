@@ -208,7 +208,7 @@ public final class Student extends TimeInspector {
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @NotBlank( message = ErrorMessages.NULL_VALUE )
     @Column(
-            columnDefinition = "VARCHAR( 13 )",
+            columnDefinition = "VARCHAR( 13 ) DEFAULT '+9989771221' || random_between( 10, 100 )",
             nullable = false,
             unique = true,
             length = 13,

@@ -1,5 +1,6 @@
 package com.university.universityapplication.database;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsParams;
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
@@ -101,13 +102,31 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
         this.registerAllParams();
+        this.setSessionProperties();
 
+        super.logging( this.getClass() );
+    }
+
+    private void setSessionProperties () {
         /*
         меняем настройки кластера, только в рамках сессии
         */
-        this.getSession().setProperty( "shared_preload_libraries", PostgresBufferMethods.PG_PREWARM );
+        this.getSession().setProperty(
+                "shared_preload_libraries",
+                String.join(
+                        ", ",
+                        PostgresBufferMethods.PG_PREWARM, // расширение для прогрева буфера
+                        PostgresStatisticsParams.PG_STAT_STATEMENTS // расгирение для работы со статистикой
+                )
+        );
 
-        super.logging( this.getClass() );
+        /*
+        сохраняем временные настройки для сбора статистики
+         */
+        this.getSession().setProperty( PostgresStatisticsParams.TRACK_COUNTS, "on" );
+        this.getSession().setProperty( PostgresStatisticsParams.TRACK_IO_TIMING, "on" );
+        this.getSession().setProperty( PostgresStatisticsParams.TRACK_FUNCTIONS, "all" );
+        this.getSession().setProperty( PostgresStatisticsParams.TRACK_ACTIVITIES, "on" );
     }
 
     /*
@@ -117,17 +136,24 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         создаем все расширения
         */
-        PostgresExtensionsRegister.generate( this.getSession() );
+//        PostgresExtensionsRegister.generate( this.getSession() );
 
         /*
         создаем все индексы
         */
-        PostgresIndexesRegister.generate( this.getSession() ).createIndex();
+//        PostgresIndexesRegister
+//                .generate( this.getSession() )
+//                .createIndex();
+
+        /*
+        создаем таблицы для хранения статистики по всем таблицам
+        */
+        PostgresStatisticsTableRegister.generate( this.getSession() );
 
         /*
         создаем и прогреваем буферы кэша
         */
-        PostgresBufferRegister.generate( this.getSession() );
+//        PostgresBufferRegister.generate( this.getSession() );
     }
 
     private void checkBatchLimit () {
@@ -154,7 +180,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             .addScalar("id", StandardBasicTypes.LONG)
             .addScalar("name", StandardBasicTypes.STRING)
             .list();
-         */
+        */
         super.analyze(
                 this.getSession().createNativeQuery(
                         MessageFormat.format(

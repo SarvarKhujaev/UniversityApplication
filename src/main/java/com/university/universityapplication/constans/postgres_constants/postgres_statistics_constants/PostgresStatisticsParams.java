@@ -1,6 +1,11 @@
 package com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants;
 
+import com.university.universityapplication.constans.postgres_constants.PostgresCommonCommands;
+import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
+
 /*
+https://habr.com/ru/company/postgrespro/blog/576100/
+
 https://habr.com/ru/companies/postgrespro/articles/576100/
 
 https://www.postgresql.org/docs/14/multivariate-statistics-examples.html
@@ -8,8 +13,21 @@ https://www.postgresql.org/docs/14/multivariate-statistics-examples.html
 public final class PostgresStatisticsParams {
     /*
     CREATE STATISTICS stts (dependencies, ndistinct) ON a, b FROM t;
+
+    CREATE STATISTICS [ IF NOT EXISTS ] statistics_name
+    [ ( statistics_kind [, ... ] ) ]
+    ON column_name, column_name [, ...]
+    FROM table_name
     */
-    public static final String CREATE_STATISTICS = "CREATE STATISTICS %s ( %s ) ON %s FROM %s;";
+    public static final String CREATE_STATISTICS = String.join(
+            " ",
+            PostgresCommonCommands.CREATE.formatted(
+                    PostgresCreateValues.STATISTICS
+            ),
+            """
+            %s ( %s ) ON %s FROM %s.%s;
+            """
+    );
 
     /*
     track_activities включает мониторинг текущих команд,
@@ -36,6 +54,7 @@ public final class PostgresStatisticsParams {
 
     /*
     pg_stat_database
+
     Отсюда можем получить следующую информацию:
         ● как много информации получаем из кэша
         ● как часто бывают проблемы с транзакциями
@@ -45,12 +64,53 @@ public final class PostgresStatisticsParams {
         ● xact_commit - количество закоммиченных транзакций
         ● xact_rollback - количество транзакций, где был выполнен откат транзакции
 
-    SELECT * FROM pg_stat_database WHERE datname = 'demo';
-     */
+    SELECT *
+    FROM pg_stat_database
+    WHERE datname = 'test'
+    limit 1;
+
+     datid                    | oid
+     datname                  | name
+     numbackends              | integer
+
+     blks_hit                 | bigint
+     blks_read                | bigint
+
+     xact_commit              | bigint
+     xact_rollback            | bigint
+
+     tup_fetched              | bigint
+     tup_updated              | bigint
+     tup_deleted              | bigint
+     tup_returned             | bigint
+     tup_inserted             | bigint
+
+     deadlocks                | bigint
+     conflicts                | bigint
+
+     temp_files               | bigint
+     temp_bytes               | bigint
+     checksum_failures        | bigint
+
+     sessions                 | bigint
+     sessions_fatal           | bigint
+     sessions_killed          | bigint
+     sessions_abandoned       | bigint
+
+     active_time              | double precision
+     session_time             | double precision
+     blk_read_time            | double precision
+     blk_write_time           | double precision
+     idle_in_transaction_time | double precision
+
+     stats_reset              | timestamp with time zone
+     checksum_last_failure    | timestamp with time zone
+    */
     public static final String PG_STAT_DATABASE = "pg_stat_database";
 
     /*
     pg_stats
+
     Хранит гистограмму распределения значений в таблице и используется
     планировщиком для построения более оптимального плана и резервирования
     памяти исходя из предполагаемого количества возвращаемых строк.
@@ -79,16 +139,64 @@ public final class PostgresStatisticsParams {
         уменьшения случайного доступа к диску (этот столбец содержит
         NULL, если для типа данных столбца не определён оператор <)
 
-        SELECT * FROM pg_stats WHERE tablename = 'flights'
-     */
+        SELECT
+
+        avg_width,
+        inherited,
+
+        attname,
+        tablename,
+        schemaname,
+
+        null_frac,
+        n_distinct,
+        correlation,
+
+        most_common_freqs,
+        elem_count_histogram,
+        most_common_elem_freqs,
+
+        most_common_vals,
+        histogram_bounds,
+        most_common_elems
+
+        FROM pg_stats
+        WHERE tablename = 'test'
+        limit 1;
+
+        schemaname             | name
+        tablename              | name
+        attname                | name
+        inherited              | boolean
+        avg_width              | integer
+        most_common_vals       | anyarray
+        histogram_bounds       | anyarray
+        most_common_elems      | anyarray
+        null_frac              | real
+        n_distinct             | real
+        correlation            | real
+        most_common_freqs      | real[]
+        most_common_elem_freqs | real[]
+        elem_count_histogram   | real[]
+
+        schemaname | tablename | attname | null_frac | n_distinct  | most_common_vals | most_common_freqs | histogram_bounds | correlation
+        ------------+-----------+---------+-----------+-------------+------------------+-------------------+------------------+-------------
+         public     | test      | id      |         0 | -0.11111111 | {1}              | {1}               |                  |           1
+    */
     public static final String PG_STATS = "pg_stats";
 
     /*
     pg_statistic_ext
+
     Предназначено для хранения статистики для связанных столбцов - когда
     мы в запросе используем несколько атрибутов и при этом их значения
     коррелированы.
-     */
+
+    select * from pg_statistic_ext limit 10;
+
+     oid | stxrelid | stxname | stxnamespace | stxowner | stxstattarget | stxkeys | stxkind | stxexprs
+    -----+----------+---------+--------------+----------+---------------+---------+---------+----------
+    */
     public static final String PG_STATISTICS_EXT = "pg_statistic_ext";
 
     /*
@@ -143,12 +251,27 @@ public final class PostgresStatisticsParams {
 
             ● backend_type - тип текущего серверного процесса
 
-       SELECT * FROM pg_stat_activity;
-     */
+       SELECT
+       pid,
+       state,
+       datid,
+       datname,
+       wait_event,
+       client_addr,
+       backend_start,
+       client_hostname,
+       wait_event_type
+       FROM pg_stat_activity limit 1;
+
+       datid | datname |  pid  |         backend_start         | client_addr | client_hostname | wait_event_type |   wait_event   | state
+       -------+---------+-------+-------------------------------+-------------+-----------------+-----------------+----------------+-------
+             |         | 10150 | 2024-03-30 21:50:25.778232+05 |             |                 | Activity        | AutoVacuumMain |
+    */
     public static final String PG_STAT_ACTIVITY = "pg_stat_activity";
 
     /*
     pg_stat_user_tables
+
     Здесь собрана статистика, что вообще у нас происходит с таблицей.
     Сколько строк, мёртвых строк и т.д.
 
@@ -163,12 +286,28 @@ public final class PostgresStatisticsParams {
         ● n_dead_tup - оценочное количество "мертвых" строк
         ● last_autovacuum - время последней очистки таблицы фоновым процессом автоочистки
 
-    SELECT * FROM pg_stat_user_tables WHERE relname = 'flights'
-     */
+    SELECT
+    relid,
+    relname,
+    seq_scan,
+    n_tup_upd,
+    n_live_tup,
+    n_dead_tup,
+    schemaname,
+    seq_tup_read,
+    last_autovacuum
+    FROM pg_stat_user_tables
+    WHERE relname = 'test' limit 1;
+
+     relid | schemaname | relname | seq_scan | seq_tup_read | n_tup_upd | n_live_tup | n_dead_tup | last_autovacuum
+    -------+------------+---------+----------+--------------+-----------+------------+------------+-----------------
+     21334 | public     | test    |        3 |           27 |         0 |          9 |          0 |
+    */
     public static final String PG_STAT_USER_TABLES = "pg_stat_user_tables";
 
     /*
     pg_stat_user_indexes
+
     Здесь собирается статистика по используемым индексам.
 
     Основные параметры:
@@ -179,7 +318,21 @@ public final class PostgresStatisticsParams {
         ● indexrelname - имя индекса
         ● idx_tup_read - количество элементов индекса, возвращённых при сканированиях по этому индексу
         ● idx_tup_fetch - количество живых строк таблицы, отобранных при простых сканированиях по этому индексу
-     */
+
+    select
+    relid,
+    relname,
+    idx_scan,
+    indexrelid,
+    indexrelname,
+    idx_tup_read,
+    idx_tup_fetch
+    from pg_stat_user_indexes limit 1;
+
+     relid |       relname        | idx_scan | indexrelid |       indexrelname        | idx_tup_read | idx_tup_fetch
+    -------+----------------------+----------+------------+---------------------------+--------------+---------------
+     21185 | education_directions |        0 |      21189 | education_directions_pkey |            0 |             0
+    */
     public static final String PG_STAT_USER_INDEXES = "pg_stat_user_tables";
 
     /*
@@ -189,13 +342,16 @@ public final class PostgresStatisticsParams {
     статистику планирования и выполнения сервером всех операторов SQL.
     Этот модуль нужно загружать, добавив pg_stat_statements в
     shared_preload_libraries в файле postgresql.conf, так как ему требуется
-    дополнительная разделяемая память. Это значит, что для загрузки или выгрузки
-    модуля необходимо перезапустить сервер.
+    дополнительная разделяемая память.
+    Это значит, что для загрузки или выгрузки модуля необходимо перезапустить сервер.
+
     Когда модуль pg_stat_statements загружается, он отслеживает
-    статистику по всем базам данных на сервере. Для получения и обработки этой
-    статистики этот модуль предоставляет представление pg_stat_statements и
-    вспомогательные функции pg_stat_statements_reset и pg_stat_statements. Эти
-    объекты не доступны глобально, но их можно установить в определённой базе
+    статистику по всем базам данных на сервере.
+
+    Для получения и обработки этой статистики этот модуль предоставляет представление pg_stat_statements и
+    вспомогательные функции pg_stat_statements_reset и pg_stat_statements
+
+    Эти объекты не доступны глобально, но их можно установить в определённой базе
     данных, выполнив команду CREATE EXTENSION pg_stat_statements.
 
     Основные параметры:
@@ -225,6 +381,19 @@ public final class PostgresStatisticsParams {
         ● blk_read_time - сколько времени суммарно заняло чтение с диска
 
         ● blk_write_time - сколько времени суммарно заняла запись на диск
+
+    select
+    rows,
+    blk_read_time,
+    blk_write_time,
+    local_blks_hit,
+    temp_blks_read,
+    shared_blks_hit,
+    shared_blks_read,
+    temp_blks_written,
+    shared_blks_dirtied,
+    shared_blks_written
+    from pg_stat_statements limit 1;
     */
     public static final String PG_STAT_STATEMENTS = "pg_stat_statements";
 }

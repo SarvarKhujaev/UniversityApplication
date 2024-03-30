@@ -111,10 +111,10 @@ public class Archive extends LogInspector {
         then the second-level cache is going to be enabled.
         Otherwise, the second-level cache is disabled.
         */
-        this.dbSettings.put(
-                Environment.USE_SECOND_LEVEL_CACHE,
-                true
-        );
+//        this.dbSettings.put(
+//                Environment.USE_SECOND_LEVEL_CACHE,
+//                true
+//        );
 
         /*
         If you enable the hibernate.generate_statistics configuration property,

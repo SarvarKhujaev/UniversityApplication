@@ -1,5 +1,8 @@
 package com.university.universityapplication.constans.postgres_constants.postgres_index_constants;
 
+import com.university.universityapplication.constans.postgres_constants.PostgresCommonCommands;
+import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
+
 /*
 хранит все кинфигурации для индексов PostgreSQL
  */
@@ -154,13 +157,20 @@ public final class PostgresIndexParams {
     /*
     CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] name ]
     ON [ ONLY ] table_name [ USING method ]
-    ( { column_name | ( expression ) } [ COLLATE collation ] [ opclass [ (
-    opclass_parameter = value [, ... ] ) ] ] [ ASC | DESC ] [ NULLS { FIRST |
-    LAST } ] [, ...] )
+    (
+    { column_name | ( expression ) } [ COLLATE collation ]
+    [ opclass [ ( opclass_parameter = value [, ... ] ) ] ] [ ASC | DESC ]
+    [ NULLS { FIRST | LAST } ] [, ...] )
     [ INCLUDE ( column_name [, ...] ) ]
     [ WITH ( storage_parameter [= value] [, ... ] ) ]
     [ TABLESPACE tablespace_name ]
     [ WHERE predicate ]
     */
-    public static final String CREATE_INDEX = "CREATE INDEX IF NOT EXISTS %s ON %s.%s( %s )";
+    public static final String CREATE_INDEX = String.join(
+            " ",
+            PostgresCommonCommands.CREATE.formatted(
+                    PostgresCreateValues.INDEX
+            ),
+            "%s ON %s.%s USING %s( %s )"
+    );
 }

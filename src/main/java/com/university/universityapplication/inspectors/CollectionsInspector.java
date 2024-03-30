@@ -1,7 +1,8 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.postgres_constants.postgres_extensions.PostgresExtensions;
+import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
+import com.university.universityapplication.constans.postgres_constants.postgres_extensions.PostgresExtensions;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.entities.*;
 
@@ -77,6 +78,16 @@ public class CollectionsInspector extends DataValidateInspector {
                 PostgresIndexesCreateQueries.UNIVERSITY_LESSON_LESSON_STATUS_INDEX,
 
                 PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_APPEARANCE_IN_LESSONS_TYPES_INDEX
+        );
+    }
+
+    protected final List< String > getTablesForStatsNames () {
+        return List.of(
+                PostgresStatisticsQueries.CREATE_UNIVERSITY_LESSON_TABLE_STATISTICS_QUERY,
+                PostgresStatisticsQueries.CREATE_UNIVERSITY_GROUPS_TABLE_STATISTICS_QUERY,
+                PostgresStatisticsQueries.CREATE_UNIVERSITY_TEACHERS_TABLE_STATISTICS_QUERY,
+                PostgresStatisticsQueries.CREATE_UNIVERSITY_STUDENTS_TABLE_STATISTICS_QUERY,
+                PostgresStatisticsQueries.CREATE_UNIVERSITY_STUDENT_APPEARANCE_TABLE_STATISTICS_QUERY
         );
     }
 

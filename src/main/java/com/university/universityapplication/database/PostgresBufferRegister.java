@@ -51,28 +51,34 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
 
     @Override
     public void calculateBufferAnalyze () {
+        final Transaction transaction = this.getSession().beginTransaction();
+
         super.analyze(
                 super.getTablesList(),
                 table -> super.analyze(
                         this.getSession().createNativeQuery(
-                                        PostgresBufferMethods.SELECT_BUFFER_ANALYZE_FOR_TABLE.formatted(
-                                                PostgreSqlSchema.UNIVERSITY,
-                                                table
-                                        ),
-                                        BufferAnalyzeResultMapper.class
-                                ).addScalar( "bufferid", Long.class )
-                                .addScalar( "usagecount", Long.class )
-                                .addScalar( "reldatabase", Long.class )
-                                .addScalar( "relfilenode", Long.class )
-                                .addScalar( "reltablespace", Long.class )
-                                .addScalar( "relforknumber", Long.class )
-                                .addScalar( "relblocknumber", Long.class )
-                                .addScalar( "pinning_backends", Long.class )
-                                .addScalar( "isdirty", Character.class )
-                                .getResultList(),
+                                PostgresBufferMethods.SELECT_BUFFER_ANALYZE_FOR_TABLE.formatted(
+                                        PostgreSqlSchema.UNIVERSITY,
+                                        table
+                                ),
+                                BufferAnalyzeResultMapper.class
+                            )
+                            .addScalar( "bufferid", Long.class )
+                            .addScalar( "usagecount", Long.class )
+                            .addScalar( "reldatabase", Long.class )
+                            .addScalar( "relfilenode", Long.class )
+                            .addScalar( "reltablespace", Long.class )
+                            .addScalar( "relforknumber", Long.class )
+                            .addScalar( "relblocknumber", Long.class )
+                            .addScalar( "pinning_backends", Long.class )
+                            .addScalar( "isdirty", Character.class )
+                            .getResultList(),
                         bufferAnalyzeResultMapper -> super.logging( bufferAnalyzeResultMapper.toString() )
                 )
         );
+
+        transaction.commit();
+        super.logging( transaction );
     }
 
     @Override
