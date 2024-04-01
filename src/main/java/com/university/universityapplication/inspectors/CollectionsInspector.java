@@ -1,10 +1,8 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
 import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
-import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_extensions.PostgresExtensions;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.entities.*;
