@@ -1,9 +1,5 @@
 package com.university.universityapplication.database;
 
-import com.university.universityapplication.constans.postgres_constants.PostgreDataTypes;
-import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueries;
-import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
-import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.interfaces.PostgresPrepareStatementsInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
