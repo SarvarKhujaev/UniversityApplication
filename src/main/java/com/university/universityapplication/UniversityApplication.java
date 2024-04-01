@@ -15,6 +15,7 @@ public class UniversityApplication {
 //        HibernateConnector.getInstance().insertStudents();
 //        HibernateConnector.getInstance().insertTeachers();
 //        HibernateConnector.getInstance().saveComments();
+        HibernateConnector.getInstance().testPreparedStatement();
         HibernateConnector.getInstance().close();
     }
 }

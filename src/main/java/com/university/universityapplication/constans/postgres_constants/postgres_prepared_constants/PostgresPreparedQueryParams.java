@@ -1,5 +1,7 @@
 package com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants;
 
+import com.university.universityapplication.constans.postgres_constants.PostgreDataTypes;
+
 /*
 https://habr.com/ru/companies/postgrespro/articles/574702/
 */
@@ -52,7 +54,7 @@ public final class PostgresPreparedQueryParams {
     Чтобы достичь того же уровня безопасности без подготовленных операторов,
     требуется аккуратно экранировать каждое значение, полученное из ненадежного источника.
     */
-    public static final String EXECUTE = "EXECUTE %s;";
+    public static final String EXECUTE = "EXECUTE %s( %s );";
 
     /*
     Несложно представить ситуацию, в которой по неудачному стечению обстоятельств первые несколько частных планов будут более дорогими, чем общий план,
@@ -65,4 +67,14 @@ public final class PostgresPreparedQueryParams {
     SET plan_cache_mode = 'force_custom_plan';
     */
     public static final String PLAN_CACHE_MODE = "plan_cache_mode";
+
+    public static final String PREPARE_GET_TEACHERS_BY_NAME_AND_EMAIL = PREPARE.formatted(
+            PostgresPreparedQueryNames.GET_TEACHERS_BY_NAME_AND_EMAIL,
+            String.join(
+                    ", ",
+                    PostgreDataTypes.TEXT.name(),
+                    PostgreDataTypes.TEXT.name()
+            ),
+            PostgresPreparedQueries.GET_FILTERED_TEACHERS
+    );
 }

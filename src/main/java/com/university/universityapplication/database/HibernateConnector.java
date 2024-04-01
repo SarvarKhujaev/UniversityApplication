@@ -1,5 +1,6 @@
 package com.university.universityapplication.database;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
 import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsParams;
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
@@ -102,7 +103,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         */
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
-        this.registerAllParams();
+        this.registerAllServices();
         this.setSessionProperties();
 
         super.logging( this.getClass() );
@@ -141,7 +142,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     /*
     создаем и регистрируем все сервисы, параметры и расщирения
     */
-    private void registerAllParams () {
+    private void registerAllServices () {
         /*
         создаем все расширения
         */
@@ -163,6 +164,11 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         создаем и прогреваем буферы кэша
         */
         PostgresBufferRegister.generate( this.getSession() );
+
+        /*
+        подгатавливаем все основные запросы для дальнейшей обработки
+        */
+        PostgresPrepareStatementsRegister.generate( this.getSession() );
     }
 
     private void checkBatchLimit () {
@@ -486,6 +492,19 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 ).getSingleResult();
 
         super.logging( teacherAverageMark.toString() );
+    }
+
+    public void testPreparedStatement () {
+        super.analyze(
+                this.getSession().createNativeQuery(
+                        PostgresPreparedQueryParams.EXECUTE.formatted(
+                                PostgresPreparedQueryNames.GET_TEACHERS_BY_NAME_AND_EMAIL,
+                                "test, test@gmail.com"
+                        ),
+                        Teacher.class
+                ).getResultList(),
+                teacher -> super.logging( teacher.getEmail() )
+        );
     }
 
     /*

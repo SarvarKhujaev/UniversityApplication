@@ -1,7 +1,10 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
+import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
+import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_extensions.PostgresExtensions;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.entities.*;
@@ -92,6 +95,12 @@ public class CollectionsInspector extends DataValidateInspector {
                 PostgresStatisticsQueries.CREATE_UNIVERSITY_TEACHERS_TABLE_STATISTICS_QUERY,
                 PostgresStatisticsQueries.CREATE_UNIVERSITY_STUDENTS_TABLE_STATISTICS_QUERY,
                 PostgresStatisticsQueries.CREATE_UNIVERSITY_STUDENT_APPEARANCE_TABLE_STATISTICS_QUERY
+        );
+    }
+
+    protected final List< String > getPreparedStatements () {
+        return List.of(
+                PostgresPreparedQueryParams.PREPARE_GET_TEACHERS_BY_NAME_AND_EMAIL
         );
     }
 
