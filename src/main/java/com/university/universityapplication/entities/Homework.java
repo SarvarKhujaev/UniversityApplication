@@ -1,11 +1,11 @@
 package com.university.universityapplication.entities;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraintsValues;
+import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraints;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlFunctions;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
-import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraints;
-import com.university.universityapplication.constans.postgres_constants.postgres_constraints_constants.PostgresConstraintsValues;
 import com.university.universityapplication.inspectors.TimeInspector;
 
 
@@ -15,9 +15,9 @@ import jakarta.validation.constraints.Size;
 import jakarta.persistence.*;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Check;
 import org.hibernate.annotations.PartitionKey;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Check;
 
 import java.util.Date;
 

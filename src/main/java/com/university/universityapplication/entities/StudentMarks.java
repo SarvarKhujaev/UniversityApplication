@@ -14,9 +14,9 @@ import jakarta.validation.constraints.Size;
 import jakarta.persistence.*;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Check;
 import org.hibernate.annotations.PartitionKey;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Check;
 
 import java.util.Date;
 
