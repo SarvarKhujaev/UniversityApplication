@@ -25,7 +25,7 @@ public final class PostgresStatisticsParams {
                     PostgresCreateValues.STATISTICS
             ),
             """
-            %s ( %s ) ON %s FROM %s.%s;
+            %s ( %s ) ON %s FROM %s.%s;;
             """
     );
 

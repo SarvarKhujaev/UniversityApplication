@@ -59,11 +59,11 @@ public class CollectionsInspector extends DataValidateInspector {
                 Lesson.class,
                 Teacher.class,
                 Student.class,
-                Comment.class,
-                Homework.class,
                 StudentMarks.class,
                 EducationDirection.class,
-                StudentAppearanceInLessons.class
+                StudentAppearanceInLessons.class,
+                Comment.class,
+                Homework.class
         );
     }
 

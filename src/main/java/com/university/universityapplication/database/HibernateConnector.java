@@ -1,8 +1,8 @@
 package com.university.universityapplication.database;
 
-import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
 import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsParams;
+import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
@@ -103,8 +103,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         */
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
-        this.registerAllServices();
         this.setSessionProperties();
+        this.registerAllServices();
 
         super.logging( this.getClass() );
     }
@@ -143,6 +143,8 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     создаем и регистрируем все сервисы, параметры и расщирения
     */
     private void registerAllServices () {
+        final Transaction transaction = this.newTransaction();
+
         /*
         создаем все расширения
         */
@@ -169,6 +171,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         подгатавливаем все основные запросы для дальнейшей обработки
         */
         PostgresPrepareStatementsRegister.generate( this.getSession() );
+
+        transaction.commit();
+
+        super.logging( transaction );
     }
 
     private void checkBatchLimit () {
@@ -499,7 +505,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                 this.getSession().createNativeQuery(
                         PostgresPreparedQueryParams.EXECUTE.formatted(
                                 PostgresPreparedQueryNames.GET_TEACHERS_BY_NAME_AND_EMAIL,
-                                "test, test@gmail.com"
+                                "'test', '0test@gmail.com'"
                         ),
                         Teacher.class
                 ).getResultList(),

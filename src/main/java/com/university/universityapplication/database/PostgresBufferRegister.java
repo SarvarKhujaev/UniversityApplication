@@ -6,7 +6,6 @@ import com.university.universityapplication.constans.postgres_constants.PostgreS
 import com.university.universityapplication.interfaces.PostgresBufferControlInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
-import org.hibernate.Transaction;
 import org.hibernate.Session;
 
 /*
@@ -51,8 +50,6 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
 
     @Override
     public void calculateBufferAnalyze () {
-        final Transaction transaction = this.getSession().beginTransaction();
-
         super.analyze(
                 super.getTablesList(),
                 table -> super.analyze(
@@ -76,15 +73,10 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
                         bufferAnalyzeResultMapper -> super.logging( bufferAnalyzeResultMapper.toString() )
                 )
         );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 
     @Override
     public void insertTableContentToBuffer () {
-        final Transaction transaction = this.getSession().beginTransaction();
-
         /*
         создаем расширение, меняем настройки pg_config и перезапускаем БД
         */
@@ -111,8 +103,5 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
                         ).getQueryString()
                 )
         );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 }

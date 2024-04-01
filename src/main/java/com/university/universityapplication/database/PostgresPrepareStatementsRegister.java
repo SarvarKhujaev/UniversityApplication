@@ -30,7 +30,11 @@ public final class PostgresPrepareStatementsRegister extends LogInspector implem
     public void prepareAllStatements() {
         super.analyze(
                 super.getPreparedStatements(),
-                query -> this.getSession().createNativeQuery( query )
+                query -> {
+                    System.out.println(
+                            this.getSession().createNativeQuery( query ).getQueryString()
+                    );
+                }
         );
     }
 }

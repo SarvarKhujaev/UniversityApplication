@@ -8,8 +8,11 @@ public final class PostgresPreparedQueries {
     public final static String GET_FILTERED_TEACHERS = String.join(
             " ",
             PostgresCommonCommands.SELECT_FROM,
-            PostgreSqlSchema.UNIVERSITY,
-            PostgreSqlTables.TEACHERS,
-            "WHERE name = $1 OR email = $2;"
+            String.join(
+                    ".",
+                    PostgreSqlSchema.UNIVERSITY,
+                    PostgreSqlTables.TEACHERS
+            ),
+            "WHERE name = $1 OR email = $2"
     );
 }

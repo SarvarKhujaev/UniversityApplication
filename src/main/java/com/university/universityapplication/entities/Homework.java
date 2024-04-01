@@ -23,6 +23,9 @@ import java.util.Date;
 
 /*
 после каждого занятия всем студентам дается ДЗ
+
+ id | created_date | homework_description | lesson_id
+----+--------------+----------------------+-----------
 */
 @Entity( name = PostgreSqlTables.HOMEWORK )
 @Table(
@@ -56,14 +59,6 @@ public final class Homework extends TimeInspector {
 
     public void setHomeworkDescription( final String homeworkDescription ) {
         this.homeworkDescription = homeworkDescription;
-    }
-
-    public Group getGroup() {
-        return this.group;
-    }
-
-    public void setGroup( final Group group ) {
-        this.group = group;
     }
 
     public Lesson getLesson() {
@@ -105,18 +100,6 @@ public final class Homework extends TimeInspector {
             name = "homework_description"
     )
     private String homeworkDescription;
-
-    /*
-    группа к которой прикреплна ДЗ
-    */
-    @Immutable
-    @PartitionKey
-    @OneToOne(
-            targetEntity = Group.class,
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    private Group group;
 
     /*
     ДЗ за конкретный урок

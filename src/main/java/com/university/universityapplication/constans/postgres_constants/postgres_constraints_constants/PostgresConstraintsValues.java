@@ -24,6 +24,6 @@ public final class PostgresConstraintsValues {
                 """;
 
     public static final String HOMEWORK_TABLE_CONSTRAINT_VALUE = """
-                character_length( teacher_comment ) BETWEEN 50 AND 500
+                character_length( homework_description ) BETWEEN 50 AND 500
                 """;
 }

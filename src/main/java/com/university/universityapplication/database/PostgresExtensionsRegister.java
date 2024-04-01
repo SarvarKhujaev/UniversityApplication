@@ -3,7 +3,6 @@ package com.university.universityapplication.database;
 import com.university.universityapplication.interfaces.PostgresExtensionsRegisterInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
-import org.hibernate.Transaction;
 import org.hibernate.Session;
 
 public final class PostgresExtensionsRegister extends LogInspector implements PostgresExtensionsRegisterInterface {
@@ -28,8 +27,6 @@ public final class PostgresExtensionsRegister extends LogInspector implements Po
 
     @Override
     public void createExtension() {
-        final Transaction transaction = this.getSession().beginTransaction();
-
         super.analyze(
                 super.getPostgresExtensions(),
                 extension -> super.logging(
@@ -38,8 +35,5 @@ public final class PostgresExtensionsRegister extends LogInspector implements Po
                         ).getQueryString()
                 )
         );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 }

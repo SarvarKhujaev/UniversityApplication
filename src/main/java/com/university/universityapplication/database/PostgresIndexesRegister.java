@@ -4,7 +4,6 @@ import com.university.universityapplication.constans.postgres_constants.postgres
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexParams;
 import com.university.universityapplication.inspectors.LogInspector;
 
-import org.hibernate.Transaction;
 import org.hibernate.Session;
 
 /*
@@ -33,8 +32,6 @@ public final class PostgresIndexesRegister extends LogInspector {
     создает индексы
     */
     public void createIndex() {
-        final Transaction transaction = this.getSession().beginTransaction();
-
         super.analyze(
                 super.getIndexCreateQueries(),
                 indexQuery -> super.logging(
@@ -43,9 +40,6 @@ public final class PostgresIndexesRegister extends LogInspector {
                         ).getQueryString()
                 )
         );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 
     /*
@@ -53,8 +47,6 @@ public final class PostgresIndexesRegister extends LogInspector {
     для очищения индексов от пустых и не используемых значений
     */
     public void reIndex() {
-        final Transaction transaction = this.getSession().beginTransaction();
-
         super.analyze(
                 super.newList( PostgresIndexesNames.values() ),
                 postgresIndexesName -> super.logging(
@@ -65,8 +57,5 @@ public final class PostgresIndexesRegister extends LogInspector {
                         ).getQueryString()
                 )
         );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 }

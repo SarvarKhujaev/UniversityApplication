@@ -24,6 +24,9 @@ import java.util.Date;
 хранит данные об оценках студента
 поставленные за конкретную ДЗ
 от преподавателя
+
+ id | created_date | mark_for_homework | teacher_comment | student_id | teacher_id
+----+--------------+-------------------+-----------------+------------+------------
 */
 @Entity( name = PostgreSqlTables.STUDENT_MARKS )
 @Table(
