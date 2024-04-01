@@ -35,7 +35,7 @@ import java.util.List;
         constraints = PostgresConstraintsValues.TEACHER_TABLE_CONSTRAINT_VALUE
 )
 @Check(
-        name = PostgresConstraints.PHONE_NUMBER_CONSTRAINT,
+        name = PostgresConstraints.TEACHER_TABLE_PHONE_NUMBER_CONSTRAINT,
         constraints = PostgresConstraintsValues.PHONE_NUMBER_CONSTRAINT_VALUE
 )
 @SqlResultSetMappings(
@@ -73,11 +73,11 @@ import java.util.List;
         }
 )
 public final class Teacher extends TimeInspector {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId ( final Long id ) {
+    public void setId ( final long id ) {
         this.id = id;
     }
 
@@ -165,7 +165,7 @@ public final class Teacher extends TimeInspector {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @Immutable
     @PartitionKey

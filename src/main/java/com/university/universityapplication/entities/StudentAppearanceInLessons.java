@@ -69,11 +69,11 @@ import java.util.Date;
         }
 )
 public final class StudentAppearanceInLessons extends TimeInspector {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId ( final Long id ) {
+    public void setId ( final long id ) {
         this.id = id;
     }
 
@@ -116,7 +116,7 @@ public final class StudentAppearanceInLessons extends TimeInspector {
 
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @Immutable
     @PartitionKey

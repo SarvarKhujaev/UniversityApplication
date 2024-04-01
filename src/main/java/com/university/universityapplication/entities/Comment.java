@@ -36,7 +36,7 @@ import java.util.Date;
         constraints = PostgresConstraintsValues.COMMENT_TABLE_CONSTRAINT_VALUE
 )
 public final class Comment extends TimeInspector {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
@@ -74,7 +74,7 @@ public final class Comment extends TimeInspector {
 
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @Immutable
     @PartitionKey

@@ -38,6 +38,8 @@ public class CollectionsInspector extends DataValidateInspector {
                 PostgreSqlTables.TEACHERS,
                 PostgreSqlTables.COMMENTS,
                 PostgreSqlTables.STUDENTS,
+                PostgreSqlTables.HOMEWORK,
+                PostgreSqlTables.STUDENT_MARKS,
                 PostgreSqlTables.EDUCATION_DIRECTIONS
         );
     }
@@ -57,6 +59,8 @@ public class CollectionsInspector extends DataValidateInspector {
                 Teacher.class,
                 Student.class,
                 Comment.class,
+                Homework.class,
+                StudentMarks.class,
                 EducationDirection.class,
                 StudentAppearanceInLessons.class
         );

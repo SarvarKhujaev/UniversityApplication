@@ -17,4 +17,13 @@ public final class PostgresConstraintsValues {
             character_length( phone_number ) = 13
             AND substr( phone_number, 0, 6 ) = '+9989'
             """;
+
+    public static final String STUDENT_MARKS_TABLE_CONSTRAINT_VALUE = """
+                ( mark_for_homework BETWEEN 1 AND 5 )
+                AND ( character_length( teacher_comment ) BETWEEN 20 AND 200 )
+                """;
+
+    public static final String HOMEWORK_TABLE_CONSTRAINT_VALUE = """
+                character_length( teacher_comment ) BETWEEN 50 AND 500
+                """;
 }

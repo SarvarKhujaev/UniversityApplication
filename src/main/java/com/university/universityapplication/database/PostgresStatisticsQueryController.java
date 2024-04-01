@@ -88,4 +88,11 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
                 PostgresStatisticsQueries.PG_STAT_USER_INDEXES_QUERY
         );
     }
+
+    @Override
+    public void get_pg_prepared_statements() {
+        this.getSession().createNativeQuery(
+                PostgresStatisticsQueries.PG_PREPARED_STATEMENTS_QUERY
+        );
+    }
 }

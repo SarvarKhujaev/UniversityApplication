@@ -55,7 +55,7 @@ import java.util.List;
         }
 )
 public final class Group extends TimeInspector {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
@@ -87,10 +87,6 @@ public final class Group extends TimeInspector {
         return this.educationDirection;
     }
 
-    public void setId ( final Long id ) {
-        this.id = id;
-    }
-
     public void setTeacher ( final Teacher teacher ) {
         this.teacher = teacher;
         this.getTeacher().getGroupList().add( this );
@@ -114,7 +110,7 @@ public final class Group extends TimeInspector {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @Immutable
     @PartitionKey

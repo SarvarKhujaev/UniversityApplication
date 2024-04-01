@@ -1,5 +1,6 @@
 package com.university.universityapplication.database;
 
+import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsParams;
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
 import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
@@ -98,7 +99,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
 
         /*
         Hibernate specific JDBC batch size configuration on a per-Session basis
-         */
+        */
         this.getSession().setJdbcBatchSize( super.BATCH_SIZE );
 
         this.registerAllParams();
@@ -121,8 +122,16 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         );
 
         /*
+        настраиваем работу с Prepared statements
+        */
+        this.getSession().setProperty(
+                PostgresPreparedQueryParams.PLAN_CACHE_MODE,
+                "'force_custom_plan'"
+        );
+
+        /*
         сохраняем временные настройки для сбора статистики
-         */
+        */
         this.getSession().setProperty( PostgresStatisticsParams.TRACK_COUNTS, "on" );
         this.getSession().setProperty( PostgresStatisticsParams.TRACK_IO_TIMING, "on" );
         this.getSession().setProperty( PostgresStatisticsParams.TRACK_FUNCTIONS, "all" );
@@ -136,14 +145,14 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         создаем все расширения
         */
-//        PostgresExtensionsRegister.generate( this.getSession() );
+        PostgresExtensionsRegister.generate( this.getSession() );
 
         /*
         создаем все индексы
         */
-//        PostgresIndexesRegister
-//                .generate( this.getSession() )
-//                .createIndex();
+        PostgresIndexesRegister
+                .generate( this.getSession() )
+                .createIndex();
 
         /*
         создаем таблицы для хранения статистики по всем таблицам
@@ -153,7 +162,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         создаем и прогреваем буферы кэша
         */
-//        PostgresBufferRegister.generate( this.getSession() );
+        PostgresBufferRegister.generate( this.getSession() );
     }
 
     private void checkBatchLimit () {

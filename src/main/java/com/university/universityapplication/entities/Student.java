@@ -30,15 +30,15 @@ import java.util.List;
         usage = CacheConcurrencyStrategy.READ_WRITE
 )
 @Check(
-        name = PostgresConstraints.PHONE_NUMBER_CONSTRAINT,
+        name = PostgresConstraints.TEACHER_TABLE_PHONE_NUMBER_CONSTRAINT,
         constraints = PostgresConstraintsValues.PHONE_NUMBER_CONSTRAINT_VALUE
 )
 public final class Student extends TimeInspector {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId ( final Long id ) {
+    public void setId ( final long id ) {
         this.id = id;
     }
 
@@ -150,7 +150,7 @@ public final class Student extends TimeInspector {
 
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @Immutable
     @PartitionKey

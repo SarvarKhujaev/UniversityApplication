@@ -14,4 +14,6 @@ public interface PostgresStatisticsQueryInterface {
     void get_pg_stat_user_tables ();
 
     void get_pg_stat_user_indexes ();
+
+    void get_pg_prepared_statements();
 }

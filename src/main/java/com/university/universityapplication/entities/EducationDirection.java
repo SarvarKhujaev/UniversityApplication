@@ -20,7 +20,7 @@ import jakarta.persistence.*;
         schema = PostgreSqlSchema.UNIVERSITY
 )
 public final class EducationDirection {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
@@ -34,7 +34,7 @@ public final class EducationDirection {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @Size(
             min = 5,

@@ -28,11 +28,11 @@ import java.util.List;
         usage = CacheConcurrencyStrategy.READ_ONLY
 )
 public final class Lesson extends TimeInspector {
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId ( final Long id ) {
+    public void setId ( final long id ) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public final class Lesson extends TimeInspector {
 
     @Id
     @GeneratedValue(  strategy = GenerationType.IDENTITY )
-    private Long id;
+    private long id;
 
     @NotNull( message = ErrorMessages.NULL_VALUE )
     @Column(
