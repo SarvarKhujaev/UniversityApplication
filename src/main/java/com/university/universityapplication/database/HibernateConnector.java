@@ -12,7 +12,6 @@ import com.university.universityapplication.entities.*;
 
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.stat.CacheRegionStatistics;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.*;
 
