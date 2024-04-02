@@ -6,6 +6,7 @@ import com.university.universityapplication.constans.postgres_constants.PostgreS
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
+import com.university.universityapplication.constans.hibernate.HibernateCacheRegions;
 import com.university.universityapplication.inspectors.TimeInspector;
 
 import jakarta.validation.constraints.*;
@@ -27,7 +28,8 @@ import java.util.List;
 )
 @Cacheable
 @Cache(
-        usage = CacheConcurrencyStrategy.READ_WRITE
+        usage = CacheConcurrencyStrategy.READ_WRITE,
+        region = HibernateCacheRegions.STUDENT_REGION
 )
 @Check(
         name = PostgresConstraints.TEACHER_TABLE_PHONE_NUMBER_CONSTRAINT,

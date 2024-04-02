@@ -5,6 +5,7 @@ import com.university.universityapplication.constans.postgres_constants.postgres
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_extensions.PostgresExtensions;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
+import com.university.universityapplication.constans.hibernate.HibernateCacheRegions;
 import com.university.universityapplication.entities.*;
 
 import java.util.function.BiConsumer;
@@ -99,6 +100,19 @@ public class CollectionsInspector extends DataValidateInspector {
     protected final List< String > getPreparedStatements () {
         return List.of(
                 PostgresPreparedQueryParams.PREPARE_GET_TEACHERS_BY_NAME_AND_EMAIL
+        );
+    }
+
+    protected final List< String > getAllCacheRegionsNames () {
+        return List.of(
+                HibernateCacheRegions.GROUP_REGION,
+                HibernateCacheRegions.LESSON_REGION,
+                HibernateCacheRegions.STUDENT_REGION,
+                HibernateCacheRegions.TEACHER_REGION,
+                HibernateCacheRegions.COMMENT_REGION,
+                HibernateCacheRegions.HOMEWORK_REGION,
+                HibernateCacheRegions.STUDENT_MARKS_REGION,
+                HibernateCacheRegions.STUDENT_APPEARANCE_IN_LESSON_REGION
         );
     }
 

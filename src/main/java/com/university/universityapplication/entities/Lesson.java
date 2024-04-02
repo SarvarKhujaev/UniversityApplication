@@ -4,6 +4,7 @@ import com.university.universityapplication.constans.postgres_constants.PostgreS
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
+import com.university.universityapplication.constans.hibernate.HibernateCacheRegions;
 import com.university.universityapplication.constans.entities_constants.LessonStatus;
 import com.university.universityapplication.inspectors.TimeInspector;
 
@@ -25,7 +26,8 @@ import java.util.List;
 )
 @Cacheable
 @Cache(
-        usage = CacheConcurrencyStrategy.READ_ONLY
+        usage = CacheConcurrencyStrategy.READ_ONLY,
+        region = HibernateCacheRegions.LESSON_REGION
 )
 public final class Lesson extends TimeInspector {
     public long getId() {

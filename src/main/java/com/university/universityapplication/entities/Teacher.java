@@ -8,6 +8,7 @@ import com.university.universityapplication.constans.hibernate.HibernateNativeNa
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
+import com.university.universityapplication.constans.hibernate.HibernateCacheRegions;
 import com.university.universityapplication.inspectors.TimeInspector;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -28,7 +29,8 @@ import java.util.List;
 )
 @Cacheable
 @org.hibernate.annotations.Cache(
-        usage = CacheConcurrencyStrategy.READ_WRITE
+        usage = CacheConcurrencyStrategy.READ_WRITE,
+        region = HibernateCacheRegions.TEACHER_REGION
 )
 @Check(
         name = PostgresConstraints.TEACHER_TABLE_CONSTRAINT,

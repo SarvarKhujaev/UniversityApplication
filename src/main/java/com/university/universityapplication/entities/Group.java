@@ -7,6 +7,7 @@ import com.university.universityapplication.constans.hibernate.HibernateNativeNa
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
+import com.university.universityapplication.constans.hibernate.HibernateCacheRegions;
 import com.university.universityapplication.inspectors.TimeInspector;
 
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +32,8 @@ import java.util.List;
 )
 @Cacheable
 @Cache(
-        usage = CacheConcurrencyStrategy.READ_ONLY
+        usage = CacheConcurrencyStrategy.READ_ONLY,
+        region = HibernateCacheRegions.GROUP_REGION
 )
 @Check(
         name = PostgresConstraints.GROUP_TABLE_CONSTRAINT,

@@ -5,6 +5,7 @@ import com.university.universityapplication.interfaces.PostgresStatisticsQueryIn
 import com.university.universityapplication.entities.postgres_stats_entities.PGStats;
 import com.university.universityapplication.inspectors.LogInspector;
 
+import org.hibernate.stat.CacheRegionStatistics;
 import org.hibernate.Session;
 
 /*
@@ -93,6 +94,42 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
     public void get_pg_prepared_statements() {
         this.getSession().createNativeQuery(
                 PostgresStatisticsQueries.PG_PREPARED_STATEMENTS_QUERY
+        );
+    }
+
+    /*
+    If you enable the hibernate.generate_statistics configuration property,
+    Hibernate will expose a number of metrics via SessionFactory.getStatistics().
+    Hibernate can even be configured to expose these statistics via JMX.
+
+    This way, you can get access to the Statistics class which comprises all sort of second-level cache metrics.
+    */
+    @Override
+    public void readCacheStatistics () {
+        super.analyze(
+                super.getAllCacheRegionsNames(),
+                regionName -> {
+                    final CacheRegionStatistics regionStatistics = this.getSession()
+                            .getSessionFactory()
+                            .getStatistics()
+                            .getDomainDataRegionStatistics( regionName );
+
+                    super.logging(
+                            regionStatistics.getRegionName()
+                    );
+
+                    super.logging(
+                            regionStatistics.getHitCount()
+                    );
+
+                    super.logging(
+                            regionStatistics.getMissCount()
+                    );
+
+                    super.logging(
+                            regionStatistics.getSizeInMemory()
+                    );
+                }
         );
     }
 }

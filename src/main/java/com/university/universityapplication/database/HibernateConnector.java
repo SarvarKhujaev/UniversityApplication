@@ -221,38 +221,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         );
     }
 
-    /*
-    If you enable the hibernate.generate_statistics configuration property,
-    Hibernate will expose a number of metrics via SessionFactory.getStatistics().
-    Hibernate can even be configured to expose these statistics via JMX.
-
-    This way, you can get access to the Statistics class which comprises all sort of second-level cache metrics.
-    */
-    public void readCacheStatistics () {
-        final CacheRegionStatistics regionStatistics = this.getSession()
-                .getSessionFactory()
-                .getStatistics()
-                .getDomainDataRegionStatistics(
-                        super.generateCacheName()
-                );
-
-        super.logging(
-                regionStatistics.getRegionName()
-        );
-
-        super.logging(
-                regionStatistics.getHitCount()
-        );
-
-        super.logging(
-                regionStatistics.getMissCount()
-        );
-
-        super.logging(
-                regionStatistics.getSizeInMemory()
-        );
-    }
-
     public void save ( final Student student ) {
         final Set< ConstraintViolation< Student > > violations = super.checkEntityValidation(
                 this.getValidatorFactory().getValidator(),
@@ -493,9 +461,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         ).setParameter( "teacher_id", 1 )
                 .setCacheable( true )
                 .setCacheMode( CacheMode.GET )
-                .setCacheRegion(
-                        super.generateCacheName()
-                ).getSingleResult();
+                .getSingleResult();
 
         super.logging( teacherAverageMark.toString() );
     }

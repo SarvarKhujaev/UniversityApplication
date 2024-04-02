@@ -6,6 +6,7 @@ import com.university.universityapplication.constans.postgres_constants.PostgreS
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.constans.entities_constants.ErrorMessages;
+import com.university.universityapplication.constans.hibernate.HibernateCacheRegions;
 import com.university.universityapplication.inspectors.TimeInspector;
 
 import jakarta.validation.constraints.Positive;
@@ -35,7 +36,8 @@ import java.util.Date;
 )
 @Cacheable
 @org.hibernate.annotations.Cache(
-        usage = CacheConcurrencyStrategy.READ_ONLY
+        usage = CacheConcurrencyStrategy.READ_ONLY,
+        region = HibernateCacheRegions.STUDENT_MARKS_REGION
 )
 @Check(
         name = PostgresConstraints.STUDENT_MARKS_TABLE_CONSTRAINT,
