@@ -15,21 +15,20 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.TEACHERS,
 
-                    PostgresIndexes.BTREE,
+                    PostgresIndexes.GIN,
 
-                    "name %s".formatted(
+                    "name %s, surname %s, father_name %s".formatted(
+                            PostgresIndexParams.ASC,
+                            PostgresIndexParams.ASC,
                             PostgresIndexParams.ASC
                     )
-            ),
-            PostgresIndexParams.INCLUDE.formatted(
-                    "surname, father_name"
             ),
             ";"
     );
 
     public static final String UNIVERSITY_TEACHER_EMAIL_INDEX = String.join(
             " ",
-            PostgresIndexParams.CREATE_INDEX.formatted(
+            PostgresIndexParams.CREATE_UNIQUE_INDEX.formatted(
                     PostgresIndexesNames.UNIVERSITY_TEACHERS_EMAIL_INDEX.name(),
 
                     PostgreSqlSchema.UNIVERSITY,
@@ -52,7 +51,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.STUDENTS,
 
-                    PostgresIndexes.BTREE,
+                    PostgresIndexes.GIN,
 
                     "name %s".formatted(
                             PostgresIndexParams.ASC
@@ -66,7 +65,7 @@ public final class PostgresIndexesCreateQueries {
 
     public static final String UNIVERSITY_STUDENT_EMAIL_INDEX = String.join(
             " ",
-            PostgresIndexParams.CREATE_INDEX.formatted(
+            PostgresIndexParams.CREATE_UNIQUE_INDEX.formatted(
                     PostgresIndexesNames.UNIVERSITY_STUDENTS_EMAIL_INDEX.name(),
 
                     PostgreSqlSchema.UNIVERSITY,
@@ -89,7 +88,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.GROUPS,
 
-                    PostgresIndexes.BTREE,
+                    PostgresIndexes.GIN,
 
                     "group_name %s".formatted(
                             PostgresIndexParams.ASC
@@ -123,7 +122,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.LESSONS,
 
-                    PostgresIndexes.BTREE,
+                    PostgresIndexes.GIN,
 
                     "lesson_name %s".formatted(
                             PostgresIndexParams.ASC
@@ -160,6 +159,41 @@ public final class PostgresIndexesCreateQueries {
                     PostgresIndexes.BTREE,
 
                     "lesson_appearance_types %s".formatted(
+                            PostgresIndexParams.ASC
+                    )
+            ),
+            ";"
+    );
+
+    public static final String UNIVERSITY_STUDENT_MARKS_INDEX = String.join(
+            " ",
+            PostgresIndexParams.CREATE_INDEX.formatted(
+                    PostgresIndexesNames.UNIVERSITY_STUDENTS_MARKS_INDEX.name(),
+
+                    PostgreSqlSchema.UNIVERSITY,
+                    PostgreSqlTables.STUDENT_MARKS,
+
+                    PostgresIndexes.BTREE,
+
+                    "mark_for_homework %s".formatted(
+                            PostgresIndexParams.ASC
+                    )
+            ),
+            ";"
+    );
+
+    public static final String UNIVERSITY_STUDENT_MARKS_STUDENT_AND_TEACHER_REF_INDEX = String.join(
+            " ",
+            PostgresIndexParams.CREATE_INDEX.formatted(
+                    PostgresIndexesNames.UNIVERSITY_STUDENT_MARKS_STUDENT_AND_TEACHER_REF_INDEX.name(),
+
+                    PostgreSqlSchema.UNIVERSITY,
+                    PostgreSqlTables.STUDENT_MARKS,
+
+                    PostgresIndexes.BTREE,
+
+                    "student_id %s, teacher_id %s".formatted(
+                            PostgresIndexParams.ASC,
                             PostgresIndexParams.ASC
                     )
             ),

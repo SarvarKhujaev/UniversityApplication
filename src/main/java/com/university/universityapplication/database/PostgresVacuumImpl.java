@@ -52,5 +52,8 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
                         ).getQueryString()
                 )
         );
+
+        PostgresIndexesRegister.generate( this.getSession() ).reIndex();
+        PostgresCheckpointRegister.generate( this.getSession() );
     }
 }

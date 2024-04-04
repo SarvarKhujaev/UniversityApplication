@@ -15,10 +15,6 @@ import java.util.*;
 public class CollectionsInspector extends DataValidateInspector {
     protected CollectionsInspector () {}
 
-    protected final <T> List<T> emptyList () {
-        return Collections.emptyList();
-    }
-
     protected final <T> ArrayList<T> newList () {
         return new ArrayList<>();
     }
@@ -43,6 +39,15 @@ public class CollectionsInspector extends DataValidateInspector {
                 PostgreSqlTables.HOMEWORK,
                 PostgreSqlTables.STUDENT_MARKS,
                 PostgreSqlTables.EDUCATION_DIRECTIONS
+        );
+    }
+
+    protected final List< String > getPartitionsTablesList () {
+        return List.of(
+                PostgreSqlTables.LESSONS,
+                PostgreSqlTables.COMMENTS,
+                PostgreSqlTables.HOMEWORK,
+                PostgreSqlTables.STUDENT_MARKS
         );
     }
 
@@ -75,6 +80,9 @@ public class CollectionsInspector extends DataValidateInspector {
 
                 PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_FIO_INDEX,
                 PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_EMAIL_INDEX,
+
+                PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_MARKS_INDEX,
+                PostgresIndexesCreateQueries.UNIVERSITY_STUDENT_MARKS_STUDENT_AND_TEACHER_REF_INDEX,
 
                 PostgresIndexesCreateQueries.UNIVERSITY_GROUPS_GROUP_NAME_INDEX,
 
@@ -131,10 +139,6 @@ public class CollectionsInspector extends DataValidateInspector {
     }
 
     protected final <T> boolean isCollectionNotEmpty ( final Collection<T> collection ) {
-        return super.objectIsNotNull( collection ) && !collection.isEmpty();
-    }
-
-    protected final <T, V> boolean isCollectionNotEmpty ( final Map<T, V> collection ) {
         return super.objectIsNotNull( collection ) && !collection.isEmpty();
     }
 }

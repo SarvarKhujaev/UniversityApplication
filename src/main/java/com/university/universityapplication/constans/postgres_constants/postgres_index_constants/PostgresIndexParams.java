@@ -5,7 +5,7 @@ import com.university.universityapplication.constans.postgres_constants.Postgres
 
 /*
 хранит все кинфигурации для индексов PostgreSQL
- */
+*/
 public final class PostgresIndexParams {
     /*
     225
@@ -58,7 +58,7 @@ public final class PostgresIndexParams {
 
     /*
     column_name - имя столбца таблицы.
-     */
+    */
     public static final String COLUMN_NAME = "COLUMN_NAME";
 
     /*
@@ -170,6 +170,18 @@ public final class PostgresIndexParams {
             " ",
             PostgresCommonCommands.CREATE.formatted(
                     PostgresCreateValues.INDEX
+            ),
+            "%s ON %s.%s USING %s( %s )"
+    );
+
+    public static final String CREATE_UNIQUE_INDEX = String.join(
+            " ",
+            PostgresCommonCommands.CREATE.formatted(
+                    String.join(
+                            " ",
+                            UNIQUE,
+                            PostgresCreateValues.INDEX.name()
+                    )
             ),
             "%s ON %s.%s USING %s( %s )"
     );

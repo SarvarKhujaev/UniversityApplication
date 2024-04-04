@@ -29,5 +29,19 @@ public final class PostgresExtensions {
                     PostgresCreateValues.EXTENSION
             ),
             "pg_stat_statements;"
-    );;
+    );
+
+    /*
+    https://medium.com/@mudasirhaji/step-by-step-process-of-how-to-install-timescaledb-with-postgresql-on-aws-ubuntu-ec2-ddc939dd819c
+
+    Создаёт секционированную по времени таблицу, если нужно писать очень
+    много данных во времени (системы мониторинга, биржевые системы)
+    */
+    public static final String CREATE_EXTENSION_TIMESCALE_DB = String.join(
+            " ",
+            PostgresCommonCommands.CREATE.formatted(
+                    PostgresCreateValues.EXTENSION
+            ),
+            "timescaledb;"
+    );
 }
