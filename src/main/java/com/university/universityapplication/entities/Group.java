@@ -47,6 +47,7 @@ import java.util.List;
                         timeout = 1,
                         readOnly = true,
                         cacheable = true,
+                        flushMode = org.hibernate.annotations.FlushModeType.COMMIT,
                         resultClass = Group.class,
                         comment = """
                                 делаем выборку по всем группам

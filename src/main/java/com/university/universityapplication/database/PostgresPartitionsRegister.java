@@ -1,14 +1,14 @@
 package com.university.universityapplication.database;
 
-import com.university.universityapplication.constans.postgres_constants.PostgresCommonCommands;
-import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
+import com.university.universityapplication.constans.postgres_constants.postgres_partition_constants.PostgresPartitionMethods;
+import com.university.universityapplication.interfaces.PostgresPartitionsRegisterInterface;
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.inspectors.LogInspector;
 
 import org.hibernate.Session;
 
-public final class PostgresPartitionsRegister extends LogInspector {
-    private Session session;
+public final class PostgresPartitionsRegister extends LogInspector implements PostgresPartitionsRegisterInterface {
+    private final Session session;
 
     private Session getSession() {
         return this.session;
@@ -20,54 +20,85 @@ public final class PostgresPartitionsRegister extends LogInspector {
         new PostgresPartitionsRegister( session );
     }
 
-    public PostgresPartitionsRegister () {}
-
     private PostgresPartitionsRegister (
             final Session session
     ) {
         this.session = session;
     }
 
-    public void registerPartitionsForCurrentYear () {
+    @Override
+    public void registerPartitionsByRange () {
         /*
         определяем текущий год
         */
         final int year = super.getCurrentYear();
 
         super.analyze(
-                super.getPartitionsTablesList(), // берем название нужных таблиц
+                super.getRangePartitionsTablesList(), // берем название нужных таблиц
                 tableName -> super.analyze(
                         super.getListOfMonths(),
                         month -> {
-                            final String temp = String.join(
-                                    " ",
-                                    PostgresCommonCommands.CREATE.formatted(
-                                            PostgresCreateValues.TABLE
-                                    ),
-                                    PostgresCommonCommands.RANGE_PARTITIONING.formatted(
-                                            super.getYearAndMonthConvertedValue(
-                                                    tableName,
-                                                    month,
-                                                    year
-                                            ),
-
-                                            PostgreSqlSchema.UNIVERSITY,
+                            final String temp = PostgresPartitionMethods.CREATE_RANGE_PARTITION_TABLE.formatted(
+                                    PostgreSqlSchema.UNIVERSITY,
+                                    super.getYearAndMonthConvertedValue(
                                             tableName,
+                                            month,
+                                            year
+                                    ),
 
-                                            super.getMonthStartOrEnd(
-                                                    true,
-                                                    month
-                                            ),
+                                    PostgreSqlSchema.UNIVERSITY,
+                                    tableName,
 
-                                            super.getMonthStartOrEnd(
-                                                    false,
-                                                    month
-                                            )
+                                    super.getMonthStartOrEnd(
+                                            true,
+                                            month
+                                    ),
+
+                                    super.getMonthStartOrEnd(
+                                            false,
+                                            month
                                     )
                             );
 
                             System.out.println( temp );
                         }
+                )
+        );
+    }
+
+    @Override
+    public void registerPartitionsByList () {
+        super.analyze(
+                super.getListPartitionsTablesList(), // берем название нужных таблиц
+                tableName -> this.getSession().createNativeQuery(
+                        PostgresPartitionMethods.CREATE_LIST_PARTITION_TABLE.formatted(
+                                PostgreSqlSchema.UNIVERSITY,
+                                tableName,
+
+                                PostgreSqlSchema.UNIVERSITY,
+                                tableName,
+
+                                "test"
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void registerPartitionsByHash () {
+        super.analyze(
+                super.getHashPartitionsTablesList(), // берем название нужных таблиц
+                tableName -> this.getSession().createNativeQuery(
+                        PostgresPartitionMethods.CREATE_HASH_PARTITION_TABLE.formatted(
+                                PostgreSqlSchema.UNIVERSITY,
+                                tableName,
+
+                                PostgreSqlSchema.UNIVERSITY,
+                                tableName,
+
+                                3,
+                                2
+                        )
                 )
         );
     }

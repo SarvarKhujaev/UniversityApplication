@@ -1,5 +1,8 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
+import com.university.universityapplication.constans.postgres_constants.PostgresCommonCommands;
+import com.university.universityapplication.constans.postgres_constants.postgres_materialized_view_constants.PostgresMaterializedViewMethods;
 import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsQueries;
 import com.university.universityapplication.constans.postgres_constants.postgres_index_constants.PostgresIndexesCreateQueries;
@@ -42,12 +45,28 @@ public class CollectionsInspector extends DataValidateInspector {
         );
     }
 
-    protected final List< String > getPartitionsTablesList () {
+    protected final List< String > getRangePartitionsTablesList() {
         return List.of(
                 PostgreSqlTables.LESSONS,
                 PostgreSqlTables.COMMENTS,
                 PostgreSqlTables.HOMEWORK,
                 PostgreSqlTables.STUDENT_MARKS
+        );
+    }
+
+    protected final List< String > getListPartitionsTablesList() {
+        return List.of(
+                PostgreSqlTables.EDUCATION_DIRECTIONS,
+                PostgreSqlTables.STUDENT_MARKS,
+                PostgreSqlTables.GROUPS
+        );
+    }
+
+    protected final List< String > getHashPartitionsTablesList() {
+        return List.of(
+                PostgreSqlTables.STUDENTS,
+                PostgreSqlTables.TEACHERS,
+                PostgreSqlTables.GROUPS
         );
     }
 
@@ -122,6 +141,29 @@ public class CollectionsInspector extends DataValidateInspector {
                 HibernateCacheRegions.STUDENT_MARKS_REGION,
                 HibernateCacheRegions.STUDENT_APPEARANCE_IN_LESSON_REGION
         );
+    }
+
+    protected final List< String > getAllMaterializedViewsNames () {
+        final List< String > materializedViews = this.newList();
+
+        this.analyze(
+                this.getTablesList(),
+                tableName -> materializedViews.add(
+                        PostgresMaterializedViewMethods.CREATE_MATERIALIZED_VIEW.formatted(
+                                String.join(
+                                        "_",
+                                        tableName,
+                                        "MATERIALIZED_VIEW"
+                                ),
+                                PostgresCommonCommands.SELECT_ALL_FROM.formatted(
+                                        PostgreSqlSchema.UNIVERSITY,
+                                        tableName
+                                )
+                        )
+                )
+        );
+
+        return materializedViews;
     }
 
     protected final synchronized <T> void analyze (

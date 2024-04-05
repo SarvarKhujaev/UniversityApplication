@@ -17,6 +17,7 @@ import org.hibernate.*;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidatorFactory;
+import jakarta.persistence.FlushModeType;
 import jakarta.validation.Validation;
 
 import java.text.MessageFormat;
@@ -162,9 +163,21 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         PostgresStatisticsTableRegister.generate( this.getSession() );
 
         /*
+        создаем все функции в БД
+        */
+        PostgresFunctionsRegister.generate( this.getSession() );
+
+        /*
         создаем и прогреваем буферы кэша
         */
         PostgresBufferRegister.generate( this.getSession() );
+
+        /*
+        создаем все Materialized Views
+        */
+        PostgresMaterializedViewRegister
+                .generate( this.getSession() )
+                .createAllMaterializedViews();
 
         /*
         подгатавливаем все основные запросы для дальнейшей обработки
@@ -215,6 +228,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
                         Object[].class
                 ).addScalar( "id", Long.class )
                         .addScalar( "total_order_sum", Long.class )
+                        .setFlushMode( FlushModeType.COMMIT )
                         .getResultList(),
                 objects -> super.logging( objects[0] + " : " + objects[1] )
         );
@@ -291,7 +305,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
 
         final List< EducationDirection > educationDirectionList = this.getSession().createQuery(
                 "FROM EDUCATION_DIRECTIONS"
-        ).getResultList();
+        ).setCacheMode( CacheMode.GET )
+                .setCacheable( true )
+                .setHibernateFlushMode( FlushMode.AUTO )
+                .getResultList();
 
         for ( int i = 0; i < 5; i++ ) {
             this.checkBatchLimit();
@@ -338,15 +355,21 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
 
         final List< Student > students = this.getSession().createQuery(
                 "FROM STUDENTS"
-        ).getResultList();
+        ).setCacheable( true )
+                .setCacheMode( CacheMode.GET )
+                .getResultList();
 
         final List< Teacher > teachers = this.getSession().createQuery(
                 "FROM TEACHERS"
-        ).getResultList();
+        ).setCacheable( true )
+                .setCacheMode( CacheMode.GET )
+                .getResultList();
 
         final List< EducationDirection > educationDirectionList = this.getSession().createQuery(
                 "FROM EDUCATION_DIRECTIONS"
-        ).getResultList();
+        ).setCacheable( true )
+                .setCacheMode( CacheMode.GET )
+                .getResultList();
 
         for ( int i = 0; i < 5; i++ ) {
             this.checkBatchLimit();
@@ -406,7 +429,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         final List< Student > students = this.getSession().createQuery(
                 "FROM STUDENTS",
                 Student.class
-        ).getResultList();
+        ).setCacheable( true )
+                .setCacheMode( CacheMode.GET )
+                .setHibernateFlushMode( FlushMode.MANUAL )
+                .getResultList();
 
         for ( int i = 0; i < students.size(); i++ ) {
             this.checkBatchLimit();
@@ -434,7 +460,10 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
 
         final List< Student > students = this.getSession().createQuery(
                 "FROM STUDENTS WHERE id IN ( 7, 8, 9, 10 )"
-        ).getResultList();
+        ).setCacheable( true )
+                .setCacheMode( CacheMode.GET )
+                .setHibernateFlushMode( FlushMode.COMMIT )
+                .getResultList();
 
         final Group group = this.getSession().get( Group.class, 9L );
 
@@ -485,6 +514,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     public synchronized void close () {
         PostgresVacuumImpl.generate( this.getSession() );
 
+        this.getSession().flush();
         this.getSession().clear();
         this.getSession().close();
         this.getSessionFactory().close();

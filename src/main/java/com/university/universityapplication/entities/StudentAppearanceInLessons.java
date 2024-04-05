@@ -60,6 +60,7 @@ import java.util.Date;
                         timeout = 1,
                         readOnly = true,
                         cacheable = true,
+                        flushMode = org.hibernate.annotations.FlushModeType.COMMIT,
                         resultClass = StudentLessonAppearanceStat.class,
                         resultSetMapping = HibernateNativeNamedQueries.GET_GROUPED_STUDENTS_STATS_FOR_LESSON_APPEARANCE_SETTER,
                         comment = """

@@ -28,6 +28,7 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
             final Session session
     ) {
         this.session = session;
+
         this.vacuumTable();
     }
 
@@ -53,6 +54,7 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
                 )
         );
 
+        PostgresMaterializedViewRegister.generate( this.getSession() ).refreshAllViews();
         PostgresIndexesRegister.generate( this.getSession() ).reIndex();
         PostgresCheckpointRegister.generate( this.getSession() );
     }

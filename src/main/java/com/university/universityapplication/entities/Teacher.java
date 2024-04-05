@@ -69,6 +69,7 @@ import java.util.List;
                         timeout = 1,
                         readOnly = true,
                         cacheable = true,
+                        flushMode = org.hibernate.annotations.FlushModeType.COMMIT,
                         resultClass = TeacherAverageMark.class,
                         resultSetMapping = HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS_SETTER
                 )

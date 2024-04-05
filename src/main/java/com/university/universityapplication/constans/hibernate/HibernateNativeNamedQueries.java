@@ -49,7 +49,7 @@ public final class HibernateNativeNamedQueries {
             WITH studentLessonsCount AS (
                 SELECT COUNT(*) AS totalLessonsCount
                 FROM university.STUDENT_APPEARANCE_IN_LESSONS u
-                WHERE u.student_id = 7
+                WHERE u.student_id = :student_id
             )
             SELECT s.lesson_appearance_types AS lessonAppearanceTypes,
             COUNT( s.lesson_appearance_types ) AS lessonsCount, -- общее количество занятий студента сгрупораванные по lesson_appearance_types
@@ -60,7 +60,7 @@ public final class HibernateNativeNamedQueries {
             ELSE 'опоздал'
             END studentAppearanceDesc
             FROM university.STUDENT_APPEARANCE_IN_LESSONS s
-            WHERE s.student_id = 7 AND ( SELECT totalLessonsCount FROM studentLessonsCount ) > 0
+            WHERE s.student_id = :student_id AND ( SELECT totalLessonsCount FROM studentLessonsCount ) > 0
             GROUP BY s.lesson_appearance_types;
             """;
 
