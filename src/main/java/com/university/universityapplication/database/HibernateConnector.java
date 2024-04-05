@@ -453,11 +453,11 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         transaction.commit();
     }
 
-    public void getGroup () {
+    public void getGroup ( final int teacherId ) {
         final TeacherAverageMark teacherAverageMark = this.getSession().createNamedQuery(
                 HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS,
                 TeacherAverageMark.class
-        ).setParameter( "teacher_id", 1 )
+        ).setParameter( "teacher_id", teacherId )
                 .setCacheable( true )
                 .setCacheMode( CacheMode.GET )
                 .getSingleResult();

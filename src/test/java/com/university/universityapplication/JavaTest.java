@@ -6,5 +6,6 @@ import org.junit.runners.Suite;
 @RunWith( value = Suite.class )
 @Suite.SuiteClasses( value = {
         DatabaseAvailabilityTest.class,
+        DatabaseLoadTest.class
 } )
 public final class JavaTest {}

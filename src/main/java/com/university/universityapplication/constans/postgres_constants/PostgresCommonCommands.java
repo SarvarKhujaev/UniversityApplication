@@ -20,7 +20,32 @@ package com.university.universityapplication.constans.postgres_constants;
 Строка данных, вставляемая в эту таблицу, перенаправляется в секцию в зависимости от
 значений столбцов или выражений в ключе разбиения.
 Если значениям в новой строке не соответствует ни одна из существующих секций, возникает ошибка.
- */
+
+CREATE TABLE measurement (
+    city_id         serial not null,
+    logdate         date not null default now(),
+    peaktemp        int,
+    unitsales       int
+) PARTITION BY range ( logdate );
+
+CREATE TABLE IF NOT EXISTS TEST_2024_APRIL PARTITION OF measurement FOR VALUES FROM ( 'Mon Apr 01 16:50:33 UZT 2024' ) TO ( 'Wed May 01 16:50:33 UZT 2024' );
+
+CREATE INDEX ON measurement USING BTree(logdate);
+
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+INSERT INTO measurement ( peaktemp, unitsales ) VALUES ( 1, 2 );
+
+SELECT count(*) from TEST_2024_APRIL;
+SELECT count(*) from measurement;
+*/
 public final class PostgresCommonCommands {
     public static final String SELECT_FROM = "SELECT * FROM";
 

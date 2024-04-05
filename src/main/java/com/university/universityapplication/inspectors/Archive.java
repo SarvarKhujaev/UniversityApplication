@@ -43,26 +43,32 @@ public class Archive extends LogInspector {
 
         this.dbSettings.put(
                 Environment.URL,
-                UniversityApplication
+                super.objectIsNotNull( UniversityApplication.context )
+                        ? UniversityApplication
                         .context
                         .getEnvironment()
                         .getProperty( "variables.HIBERNATE_VALUES.URL" )
+                        : "jdbc:postgresql://localhost:5432/postgres"
         );
 
         this.dbSettings.put(
                 Environment.USER,
-                UniversityApplication
+                super.objectIsNotNull( UniversityApplication.context )
+                        ? UniversityApplication
                         .context
                         .getEnvironment()
                         .getProperty( "variables.HIBERNATE_VALUES.USER" )
+                        : "postgres"
         );
 
         this.dbSettings.put(
                 Environment.PASS,
-                UniversityApplication
+                super.objectIsNotNull( UniversityApplication.context )
+                        ? UniversityApplication
                         .context
                         .getEnvironment()
                         .getProperty( "variables.HIBERNATE_VALUES.PASSWORD" )
+                        : "killerbee"
         );
 
         this.dbSettings.put( Environment.DRIVER, "org.postgresql.Driver" );

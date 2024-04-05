@@ -19,7 +19,7 @@ public final class HibernateNativeNamedQueries {
     public static final String GET_TEACHER_AVERAGE_MARKS_SETTER = "GET_TEACHER_AVERAGE_MARKS_SETTER";
 
     public static final String GET_TEACHER_AVERAGE_MARKS_QUERY = """
-            SELECT COALESCE( averageMark, 0 ), lessonCount,
+            SELECT COALESCE( averageMark, 0 ) AS averageMark, lessonCount,
                 CASE
                 WHEN averageMark BETWEEN 0 AND 2 THEN 'horrible'
                 WHEN averageMark BETWEEN 2 AND 3 THEN 'normal'
@@ -36,7 +36,7 @@ public final class HibernateNativeNamedQueries {
 
                 INNER JOIN university.comments c ON c.lesson_id = l.id -- находим всe комметарии к этим занятиям
 
-                WHERE g.teacher_id = 5 -- находим все группы за которые он отвечает
+                WHERE g.teacher_id = :teacher_id -- находим все группы за которые он отвечает
             );
             """;
 
@@ -62,5 +62,12 @@ public final class HibernateNativeNamedQueries {
             FROM university.STUDENT_APPEARANCE_IN_LESSONS s
             WHERE s.student_id = 7 AND ( SELECT totalLessonsCount FROM studentLessonsCount ) > 0
             GROUP BY s.lesson_appearance_types;
+            """;
+
+    public static final String GET_STUDENTS_QUERY_TEST =
+            """
+            SELECT *
+            FROM %s.%s
+            WHERE name = %s AND surname = %s AND father_name = %s;
             """;
 }
