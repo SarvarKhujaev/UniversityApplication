@@ -51,7 +51,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         return CONNECTOR != null ? CONNECTOR : ( CONNECTOR = new HibernateConnector() );
     }
 
-    private Transaction newTransaction () {
+    private synchronized Transaction newTransaction () {
         return this.getSession().beginTransaction();
     }
 
@@ -176,7 +176,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( transaction );
     }
 
-    private void checkBatchLimit () {
+    private synchronized void checkBatchLimit () {
         if ( super.isBatchLimitNotOvercrowded() ) {
             /*
             если да, то освобождаем пространство в кеше
@@ -190,7 +190,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         }
     }
 
-    public void getWithNativeQuery () {
+    public synchronized void getWithNativeQuery () {
         /*
         To avoid the overhead of using ResultSetMetadata, or simply to be more explicit in what is returned, one can use addScalar():
 
@@ -220,7 +220,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         );
     }
 
-    public void save ( final Student student ) {
+    public synchronized void save ( final Student student ) {
         final Set< ConstraintViolation< Student > > violations = super.checkEntityValidation(
                 this.getValidatorFactory().getValidator(),
                 student
@@ -242,7 +242,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         }
     }
 
-    public void save ( final Teacher teacher ) {
+    public synchronized void save ( final Teacher teacher ) {
         final Set< ConstraintViolation< Teacher > > violations = super.checkEntityValidation(
                 this.getValidatorFactory().getValidator(),
                 teacher
@@ -264,7 +264,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         }
     }
 
-    public void save ( final Group group ) {
+    public synchronized void save ( final Group group ) {
         final Set< ConstraintViolation< Group > > violations = super.checkEntityValidation(
                 this.getValidatorFactory().getValidator(),
                 group
@@ -286,7 +286,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         }
     }
 
-    public void insertStudents () {
+    public synchronized void insertStudents () {
         final Transaction transaction = this.newTransaction();
 
         final List< EducationDirection > educationDirectionList = this.getSession().createQuery(
@@ -315,7 +315,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( transaction );
     }
 
-    public void insertTeachers () {
+    public synchronized void insertTeachers () {
         for ( int i = 0; i < 5; i++ ) {
             this.checkBatchLimit();
 
@@ -333,7 +333,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         }
     }
 
-    public void insertGroups () {
+    public synchronized void insertGroups () {
         final Transaction transaction = this.newTransaction();
 
         final List< Student > students = this.getSession().createQuery(
@@ -371,7 +371,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( transaction );
     }
 
-    public void save () {
+    public synchronized void save () {
         final Transaction transaction = this.newTransaction();
 
         final Group group = this.getSession().get( Group.class, 9L );
@@ -395,7 +395,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( transaction );
     }
 
-    public void saveComments () {
+    public synchronized void saveComments () {
         final Transaction transaction = this.newTransaction();
 
         final Lesson lesson = this.getSession().get(
@@ -429,7 +429,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( transaction );
     }
 
-    public void test () {
+    public synchronized void test () {
         final Transaction transaction = this.newTransaction();
 
         final List< Student > students = this.getSession().createQuery(
@@ -453,7 +453,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         transaction.commit();
     }
 
-    public void getGroup ( final int teacherId ) {
+    public synchronized void getGroup ( final int teacherId ) {
         final TeacherAverageMark teacherAverageMark = this.getSession().createNamedQuery(
                 HibernateNativeNamedQueries.GET_TEACHER_AVERAGE_MARKS,
                 TeacherAverageMark.class
@@ -465,7 +465,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         super.logging( teacherAverageMark.toString() );
     }
 
-    public void testPreparedStatement () {
+    public synchronized void testPreparedStatement () {
         super.analyze(
                 this.getSession().createNativeQuery(
                         PostgresPreparedQueryParams.EXECUTE.formatted(
