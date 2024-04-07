@@ -21,7 +21,7 @@ public enum PostgresFunctionsQuery {
             $$
             language sql;
             """.formatted(
-                PostgresCommonCommands.CREATE.formatted(
+                PostgresCommonCommands.CREATE_OR_REPLACE.formatted(
                         PostgresCreateValues.FUNCTION
                 ),
                 PostgresFunctionsNames.SHOW_ALL_TABLES_IN_SCHEMA,

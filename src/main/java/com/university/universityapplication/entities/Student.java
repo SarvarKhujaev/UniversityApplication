@@ -35,6 +35,10 @@ import java.util.List;
         name = PostgresConstraints.TEACHER_TABLE_PHONE_NUMBER_CONSTRAINT,
         constraints = PostgresConstraintsValues.PHONE_NUMBER_CONSTRAINT_VALUE
 )
+/*
+ id | age | birth_date |      created_date       |      email      | father_name | name  | student_short_description | surname | phone_number
+----+-----+------------+-------------------------+-----------------+-------------+-------+---------------------------+---------+---------------
+*/
 public final class Student extends TimeInspector {
     public long getId() {
         return this.id;

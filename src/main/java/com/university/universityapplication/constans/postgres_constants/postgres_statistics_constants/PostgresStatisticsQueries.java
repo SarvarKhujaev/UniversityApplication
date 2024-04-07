@@ -130,7 +130,7 @@ public final class PostgresStatisticsQueries {
                     PostgresStatisticsNames.UNIVERSITY_LESSON_TABLE_STATISTICS.name(),
 
                     PostgresStatisticsTypes.DEPENDENCIES,
-                    "lessonName, lesson_status",
+                    "lesson_name, lesson_status",
 
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.LESSONS

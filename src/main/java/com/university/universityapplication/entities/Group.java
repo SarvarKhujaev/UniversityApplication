@@ -57,6 +57,9 @@ import java.util.List;
                 )
         }
 )
+/*
+id |      created_date      |  group_name  | max_students_number | students_number | educationdirection_id | teacher_id
+*/
 public final class Group extends TimeInspector {
     public long getId() {
         return this.id;

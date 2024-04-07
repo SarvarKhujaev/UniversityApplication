@@ -71,6 +71,9 @@ import java.util.Date;
                 )
         }
 )
+/*
+id | appearance_date | lesson_appearance_types | lesson_id | student_id
+*/
 public final class StudentAppearanceInLessons extends TimeInspector {
     public long getId() {
         return this.id;

@@ -10,7 +10,8 @@ public enum PostgresCreateValues {
     FUNCTION,
     TABLE,
     INDEX,
-    ENUM;
+    ENUM,
+    TYPE;
 
     public String getOriginalValue () {
         return "MATERIALIZED VIEW";

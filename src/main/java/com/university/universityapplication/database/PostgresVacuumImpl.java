@@ -7,6 +7,7 @@ import com.university.universityapplication.inspectors.LogInspector;
 
 import java.text.MessageFormat;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /*
 работает с инструментом VACUUM PostgreSQL
@@ -34,6 +35,8 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
 
     @Override
     public void vacuumTable () {
+        final Transaction transaction = this.getSession().beginTransaction();
+
         super.analyze(
                 super.getTablesList(),
                 table -> super.logging(
@@ -57,5 +60,8 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
         PostgresMaterializedViewRegister.generate( this.getSession() ).refreshAllViews();
         PostgresIndexesRegister.generate( this.getSession() ).reIndex();
         PostgresCheckpointRegister.generate( this.getSession() );
+
+        transaction.commit();
+        super.logging( transaction );
     }
 }

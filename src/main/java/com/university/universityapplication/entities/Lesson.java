@@ -29,6 +29,9 @@ import java.util.List;
         usage = CacheConcurrencyStrategy.READ_ONLY,
         region = HibernateCacheRegions.LESSON_REGION
 )
+/*
+id |       lesson_date       | lessonname | group_id | lesson_status
+*/
 public final class Lesson extends TimeInspector {
     public long getId() {
         return this.id;

@@ -4,8 +4,11 @@ import com.university.universityapplication.constans.postgres_constants.postgres
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryNames;
 import com.university.universityapplication.entities.query_result_mapper_entities.TeacherAverageMark;
+import com.university.universityapplication.constans.postgres_constants.PostgresCommonCommands;
 import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
+import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
 import com.university.universityapplication.constans.hibernate.HibernateNativeNamedQueries;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlTables;
 import com.university.universityapplication.interfaces.ServiceCommonMethods;
 import com.university.universityapplication.inspectors.Archive;
 import com.university.universityapplication.entities.*;
@@ -507,14 +510,31 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         );
     }
 
+    public synchronized void getFromView () {
+        super.analyze(
+                this.getSession().createNativeQuery(
+                        String.join(
+                                " ",
+                                PostgresCommonCommands.SELECT_FROM,
+                                String.join(
+                                        "_",
+                                        PostgreSqlTables.STUDENTS,
+                                        PostgresCreateValues.MATERIALIZED_VIEW.name()
+                                )
+                        ),
+                        Student.class
+                ).getResultList(),
+                student -> super.logging( student.getEmail() )
+        );
+    }
+
     /*
     закрывам все соединения и instance
     */
     @Override
     public synchronized void close () {
-        PostgresVacuumImpl.generate( this.getSession() );
+//        PostgresVacuumImpl.generate( this.getSession() );
 
-        this.getSession().flush();
         this.getSession().clear();
         this.getSession().close();
         this.getSessionFactory().close();

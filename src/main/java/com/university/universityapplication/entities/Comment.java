@@ -37,6 +37,9 @@ import java.util.Date;
         name = PostgresConstraints.COMMENT_TABLE_CONSTRAINT,
         constraints = PostgresConstraintsValues.COMMENT_TABLE_CONSTRAINT_VALUE
 )
+/*
+id  | comment |      created_date       | mark | student_id | lesson_id
+*/
 public final class Comment extends TimeInspector {
     public long getId() {
         return this.id;

@@ -8,5 +8,7 @@ public final class PostgresCommonCommands {
 
     public static final String CREATE = "CREATE %s IF NOT EXISTS";
 
+    public static final String CREATE_OR_REPLACE = "CREATE OR REPLACE %s IF NOT EXISTS";
+
     public static final String SELECT_ALL_FROM = "SELECT * FROM %s.%s;";
 }

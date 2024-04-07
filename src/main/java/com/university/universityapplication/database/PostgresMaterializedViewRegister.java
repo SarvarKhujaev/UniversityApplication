@@ -4,7 +4,6 @@ import com.university.universityapplication.constans.postgres_constants.postgres
 import com.university.universityapplication.interfaces.PostgresMaterializedViewRegisterInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
-import org.hibernate.Transaction;
 import org.hibernate.Session;
 
 public final class PostgresMaterializedViewRegister extends LogInspector implements PostgresMaterializedViewRegisterInterface {
@@ -38,8 +37,6 @@ public final class PostgresMaterializedViewRegister extends LogInspector impleme
 
     @Override
     public void refreshAllViews () {
-        final Transaction transaction = this.getSession().beginTransaction();
-
         super.analyze(
                 this.getSession().createNativeQuery(
                         PostgresMaterializedViewMethods.REFRESH_ALL_MATERIALIZED_VIEWS,
@@ -51,8 +48,5 @@ public final class PostgresMaterializedViewRegister extends LogInspector impleme
                         )
                 )
         );
-
-        transaction.commit();
-        super.logging( transaction );
     }
 }

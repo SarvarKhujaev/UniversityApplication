@@ -75,6 +75,10 @@ import java.util.List;
                 )
         }
 )
+/*
+ id | age | birth_date |      created_date       |      email      | father_name | name  | surname | teacher_short_description | phone_number
+----+-----+------------+-------------------------+-----------------+-------------+-------+---------+---------------------------+---------------
+*/
 public final class Teacher extends TimeInspector {
     public long getId() {
         return this.id;
@@ -162,7 +166,7 @@ public final class Teacher extends TimeInspector {
         this.teacherShortDescription = teacherShortDescription;
     }
 
-    public List<Group> getGroupList() {
+    public List< Group > getGroupList() {
         return this.groupList;
     }
 

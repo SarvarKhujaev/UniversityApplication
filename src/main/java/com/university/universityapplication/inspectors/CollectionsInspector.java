@@ -2,6 +2,7 @@ package com.university.universityapplication.inspectors;
 
 import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.constans.postgres_constants.PostgresCommonCommands;
+import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
 import com.university.universityapplication.constans.postgres_constants.postgres_materialized_view_constants.PostgresMaterializedViewMethods;
 import com.university.universityapplication.constans.postgres_constants.postgres_prepared_constants.PostgresPreparedQueryParams;
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsQueries;
@@ -153,7 +154,7 @@ public class CollectionsInspector extends DataValidateInspector {
                                 String.join(
                                         "_",
                                         tableName,
-                                        "MATERIALIZED_VIEW"
+                                        PostgresCreateValues.MATERIALIZED_VIEW.name()
                                 ),
                                 PostgresCommonCommands.SELECT_ALL_FROM.formatted(
                                         PostgreSqlSchema.UNIVERSITY,

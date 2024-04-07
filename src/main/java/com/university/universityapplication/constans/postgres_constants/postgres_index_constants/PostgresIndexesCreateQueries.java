@@ -82,7 +82,7 @@ public final class PostgresIndexesCreateQueries {
 
     public static final String UNIVERSITY_GROUPS_GROUP_NAME_INDEX = String.join(
             " ",
-            PostgresIndexParams.CREATE_INDEX.formatted(
+            PostgresIndexParams.CREATE_UNIQUE_INDEX.formatted(
                     PostgresIndexesNames.UNIVERSITY_GROUPS_GROUP_NAME_INDEX.name(),
 
                     PostgreSqlSchema.UNIVERSITY,

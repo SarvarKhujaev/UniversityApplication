@@ -19,6 +19,9 @@ import jakarta.persistence.*;
         name = PostgreSqlTables.EDUCATION_DIRECTIONS,
         schema = PostgreSqlSchema.UNIVERSITY
 )
+/*
+id | direction_name
+ */
 public final class EducationDirection {
     public long getId() {
         return this.id;

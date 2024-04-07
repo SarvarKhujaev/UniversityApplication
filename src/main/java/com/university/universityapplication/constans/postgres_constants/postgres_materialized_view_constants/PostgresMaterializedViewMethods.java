@@ -70,7 +70,7 @@ public final class PostgresMaterializedViewMethods {
                     PostgresCreateValues.MATERIALIZED_VIEW.getOriginalValue()
             ),
             """
-            %s AS %s;
+            %s AS %s
             """
     );
 

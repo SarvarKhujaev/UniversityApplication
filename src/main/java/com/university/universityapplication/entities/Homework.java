@@ -42,6 +42,9 @@ import java.util.Date;
         name = PostgresConstraints.HOMEWORK_TABLE_CONSTRAINT,
         constraints = PostgresConstraintsValues.HOMEWORK_TABLE_CONSTRAINT_VALUE
 )
+/*
+id | created_date | homework_description | lesson_id
+*/
 public final class Homework extends TimeInspector {
     public long getId() {
         return this.id;
