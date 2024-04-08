@@ -71,7 +71,7 @@ https://habr.com/ru/companies/postgrespro/articles/442804/ < - docs
 приложения не надо думать об одновременном выполнении. Если транзакции выполняют корректные последовательности операторов,
 работая в одиночку, данные будут согласованы и при одновременной работе этих транзакций.
 */
-public final class PostgreTransactionIsolationTypes {
+public final class PostgresTransactionIsolationTypes {
     /*
     «Грязное» чтение (Dirty read) - транзакция T1 может читать строки,
     изменённые, но ещё не зафиксированные, транзакцией T2 (не было COMMIT).

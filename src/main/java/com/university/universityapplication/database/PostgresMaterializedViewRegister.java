@@ -2,6 +2,8 @@ package com.university.universityapplication.database;
 
 import com.university.universityapplication.constans.postgres_constants.postgres_materialized_view_constants.PostgresMaterializedViewMethods;
 import com.university.universityapplication.interfaces.PostgresMaterializedViewRegisterInterface;
+import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
+import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.inspectors.LogInspector;
 
 import org.hibernate.Session;
@@ -39,7 +41,10 @@ public final class PostgresMaterializedViewRegister extends LogInspector impleme
     public void refreshAllViews () {
         super.analyze(
                 this.getSession().createNativeQuery(
-                        PostgresMaterializedViewMethods.REFRESH_ALL_MATERIALIZED_VIEWS,
+                        PostgresMaterializedViewMethods.REFRESH_ALL_MATERIALIZED_VIEWS.formatted(
+                                PostgresCreateValues.MATERIALIZED_VIEW.getOriginalValue(),
+                                PostgreSqlSchema.UNIVERSITY
+                        ),
                         String.class
                 ).getResultList(),
                 viewName -> this.getSession().createNativeQuery(

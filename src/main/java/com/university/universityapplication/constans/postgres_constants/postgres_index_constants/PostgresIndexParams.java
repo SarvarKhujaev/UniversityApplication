@@ -151,6 +151,8 @@ public final class PostgresIndexParams {
 
     new_tablespace
         The tablespace where indexes will be rebuilt.
+
+    Команда REINDEX перестраивает отдельный индекс на таблице. Фактически, VACUUM FULL и CLUSTER используют эту команду для того, чтобы перестроить индексы
     */
     public static final String REINDEX = "REINDEX CONCURRENTLY INDEX %s;";
 

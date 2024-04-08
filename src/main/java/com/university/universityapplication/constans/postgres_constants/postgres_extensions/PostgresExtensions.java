@@ -44,4 +44,26 @@ public final class PostgresExtensions {
             ),
             "timescaledb;"
     );
+
+    /*
+    SELECT * FROM pgstattuple( 'tablename' );
+
+    -[ RECORD 1 ]------+---------
+    table_len          | 68272128
+    tuple_count        | 500000
+    tuple_len          | 64500000
+    tuple_percent      | 94.47
+    dead_tuple_count   | 0
+    dead_tuple_len     | 0
+    dead_tuple_percent | 0
+    free_space         | 38776
+    free_percent       | 0.06
+     */
+    public static final String CREATE_EXTENSION_PG_STAT_TUPLE = String.join(
+            " ",
+            PostgresCommonCommands.CREATE.formatted(
+                    PostgresCreateValues.EXTENSION
+            ),
+            "pgstattuple;"
+    );
 }

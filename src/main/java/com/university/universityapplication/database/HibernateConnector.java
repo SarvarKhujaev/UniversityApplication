@@ -59,7 +59,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         return this.getSession().beginTransaction();
     }
 
-    private HibernateConnector() {
+    private HibernateConnector () {
         /*
         оегистрируем все настройки
         */
@@ -110,6 +110,9 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         this.registerAllServices();
 
         super.logging( this.getClass() );
+
+        PostgresStatisticsQueryController.generate( this.getSession() ).readPgStatTuple();
+        PostgresStatisticsQueryController.generate( this.getSession() ).readPgStatIndex();
     }
 
     private void setSessionProperties () {
@@ -168,7 +171,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         создаем все функции в БД
         */
-        PostgresFunctionsRegister.generate( this.getSession() );
+        PostgresFunctionsRegister.generate( this.getSession() ).createAllFunctions();
 
         /*
         создаем и прогреваем буферы кэша
@@ -202,7 +205,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
             to control the size of the first-level cache.
              */
             this.getSession().flush();
-            this.getSession().clear();
         }
     }
 
@@ -533,7 +535,7 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
     */
     @Override
     public synchronized void close () {
-//        PostgresVacuumImpl.generate( this.getSession() );
+        PostgresVacuumImpl.generate( this.getSession() ).vacuumTable();
 
         this.getSession().clear();
         this.getSession().close();

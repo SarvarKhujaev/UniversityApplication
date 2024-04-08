@@ -103,6 +103,20 @@ public final class PostgresStatisticsQueries {
                     PostgresStatisticsParams.PG_PREPARED_STATEMENTS
             );
 
+    public static final String PG_STAT_TUPLE_QUERY = String.join(
+            " ",
+            PostgresCommonCommands.SELECT_FROM,
+            PostgresStatisticsParams.PG_STAT_TUPLE,
+            "( '%s' )"
+    );
+
+    public static final String PG_STAT_INDEX_QUERY = String.join(
+            " ",
+            PostgresCommonCommands.SELECT_FROM,
+            PostgresStatisticsParams.PG_STAT_INDEX,
+            "( '%s' )"
+    );
+
     public static final String CREATE_UNIVERSITY_TEACHERS_TABLE_STATISTICS_QUERY =
             PostgresStatisticsParams.CREATE_STATISTICS.formatted(
                     PostgresStatisticsNames.UNIVERSITY_TEACHERS_TABLE_STATISTICS.name(),

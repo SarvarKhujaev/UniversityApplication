@@ -1,13 +1,13 @@
 package com.university.universityapplication.database;
 
 import com.university.universityapplication.constans.postgres_constants.PostgresVacuumMethods;
-import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.interfaces.PostgresVacuumMethodsInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
 import java.text.MessageFormat;
-import org.hibernate.Session;
+
 import org.hibernate.Transaction;
+import org.hibernate.Session;
 
 /*
 работает с инструментом VACUUM PostgreSQL
@@ -19,39 +19,41 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
         return this.session;
     }
 
-    public static void generate (
+    public static PostgresVacuumImpl generate (
             final Session session
     ) {
-        new PostgresVacuumImpl( session );
+        return new PostgresVacuumImpl( session );
     }
 
     private PostgresVacuumImpl (
             final Session session
     ) {
         this.session = session;
-
-        this.vacuumTable();
     }
 
+    /*
+    проводит очистку VACUUM всех таблиц
+    */
     @Override
     public void vacuumTable () {
         final Transaction transaction = this.getSession().beginTransaction();
 
         super.analyze(
-                super.getTablesList(),
-                table -> super.logging(
-                        table
+                PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
+                schemaAndTableName -> super.logging(
+                        schemaAndTableName
                         + " was cleaned: "
                         + this.getSession().createNativeQuery(
                                 MessageFormat.format(
                                         """
-                                        VACUUM( {0}, {1} ) {2}.{3}
+                                                {0}( {1}, {2} ) {3}
                                         """,
+                                        PostgresVacuumMethods.VACUUM,
+
                                         PostgresVacuumMethods.ANALYZE,
                                         PostgresVacuumMethods.VERBOSE,
 
-                                        PostgreSqlSchema.UNIVERSITY,
-                                        table
+                                        schemaAndTableName
                                 )
                         ).getQueryString()
                 )
@@ -63,5 +65,26 @@ public final class PostgresVacuumImpl extends LogInspector implements PostgresVa
 
         transaction.commit();
         super.logging( transaction );
+    }
+
+    /*
+    провеодит очистку конкретной таблицы
+    нужно выбрать тип очистки ( Full, Verbose ) и название таблицы
+    */
+    @Override
+    public void vacuumTable (
+            final String tableName,
+            final PostgresVacuumMethods vacuumMethod
+    ) {
+        super.logging(
+                this.getSession().createNativeQuery(
+                        MessageFormat.format(
+                                "{0} {1} {2}",
+                                PostgresVacuumMethods.VACUUM,
+                                vacuumMethod,
+                                tableName
+                        )
+                ).getQueryString()
+        );
     }
 }

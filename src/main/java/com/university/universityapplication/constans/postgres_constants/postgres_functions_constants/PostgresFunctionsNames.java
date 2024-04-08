@@ -2,4 +2,5 @@ package com.university.universityapplication.constans.postgres_constants.postgre
 
 public enum PostgresFunctionsNames {
     SHOW_ALL_TABLES_IN_SCHEMA,
+    SHOW_ALL_INDEXES_IN_TABLE,
 }

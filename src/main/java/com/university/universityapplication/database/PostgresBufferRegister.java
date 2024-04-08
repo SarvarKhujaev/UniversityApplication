@@ -2,7 +2,6 @@ package com.university.universityapplication.database;
 
 import com.university.universityapplication.entities.query_result_mapper_entities.BufferAnalyzeResultMapper;
 import com.university.universityapplication.constans.postgres_constants.PostgresBufferMethods;
-import com.university.universityapplication.constans.postgres_constants.PostgreSqlSchema;
 import com.university.universityapplication.interfaces.PostgresBufferControlInterface;
 import com.university.universityapplication.inspectors.LogInspector;
 
@@ -51,11 +50,10 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
     @Override
     public void calculateBufferAnalyze () {
         super.analyze(
-                super.getTablesList(),
+                PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
                 table -> super.analyze(
                         this.getSession().createNativeQuery(
                                 PostgresBufferMethods.SELECT_BUFFER_ANALYZE_FOR_TABLE.formatted(
-                                        PostgreSqlSchema.UNIVERSITY,
                                         table
                                 ),
                                 BufferAnalyzeResultMapper.class
@@ -92,7 +90,7 @@ public final class PostgresBufferRegister extends LogInspector implements Postgr
         загружаем список таблиц в буферы
         */
         super.analyze(
-                super.getTablesList(),
+                PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
                 table -> super.logging(
                         table
                         + " was inserted into buffer: "

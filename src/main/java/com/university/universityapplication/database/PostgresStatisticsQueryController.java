@@ -1,6 +1,9 @@
 package com.university.universityapplication.database;
 
 import com.university.universityapplication.constans.postgres_constants.postgres_statistics_constants.PostgresStatisticsQueries;
+import com.university.universityapplication.constans.postgres_constants.PostgresVacuumMethods;
+import com.university.universityapplication.entities.postgres_stats_entities.PgStatIndex;
+import com.university.universityapplication.entities.postgres_stats_entities.PgStatTuple;
 import com.university.universityapplication.interfaces.PostgresStatisticsQueryInterface;
 import com.university.universityapplication.entities.postgres_stats_entities.PGStats;
 import com.university.universityapplication.inspectors.LogInspector;
@@ -18,27 +21,27 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
         return this.session;
     }
 
-    public static void generate (
+    public static PostgresStatisticsQueryController generate (
             final Session session
     ) {
-        new PostgresStatisticsQueryController( session );
+        return new PostgresStatisticsQueryController( session );
     }
 
     private PostgresStatisticsQueryController (
             final Session session
     ) {
         this.session = session;
-
-        this.get_pg_stats();
     }
 
     @Override
     public void get_pg_stats() {
         super.analyze(
-                super.getTablesList(),
+                PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
                 tableName -> super.analyze(
                         this.getSession().createNativeQuery(
-                                PostgresStatisticsQueries.PG_STATS_QUERY.formatted(),
+                                PostgresStatisticsQueries.PG_STATS_QUERY.formatted(
+                                        tableName
+                                ),
                                 PGStats.class
                         ).getResultList(),
                         pgStats -> super.logging(
@@ -130,6 +133,68 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
                             regionStatistics.getSizeInMemory()
                     );
                 }
+        );
+    }
+
+    @Override
+    public void readPgStatTuple () {
+        super.analyze(
+                PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
+                schemaAndTableName -> super.analyze(
+                        this.getSession().createNativeQuery(
+                                PostgresStatisticsQueries.PG_STAT_TUPLE_QUERY.formatted(
+                                        schemaAndTableName
+                                ),
+                                PgStatTuple.class
+                        ).getResultList(),
+                        pgStatTuple -> {
+                            /*
+                            если процент соотношений живых записей и мертвых больше 70 %
+                            то применяем VACUUM FULL на этой таблице
+                            чтобы очистить таблицу и индексы
+                            */
+                            if ( pgStatTuple.getFree_percent() < 70 ) {
+                                PostgresVacuumImpl.generate( this.getSession() ).vacuumTable(
+                                        schemaAndTableName,
+                                        PostgresVacuumMethods.FULL
+                                );
+                            }
+                        }
+                )
+        );
+    }
+
+    @Override
+    public void readPgStatIndex () {
+        super.analyze(
+                PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
+                schemaAndTableName -> super.analyze(
+                        this.getSession().createNativeQuery(
+                                PostgresStatisticsQueries.PG_STAT_INDEX_QUERY.formatted(
+                                        String.join(
+                                                "",
+                                                schemaAndTableName,
+                                                "_s"
+                                        )
+                                ),
+                                PgStatIndex.class
+                        ).getResultList(),
+                        pgStatIndex -> {
+                            if ( pgStatIndex.getAvg_leaf_density() < 70 ) {
+                                super.analyze(
+                                        PostgresFunctionsRegister
+                                                .generate( this.getSession() )
+                                                .getListOfIndexesInTable(
+                                                        schemaAndTableName.split( "[.]" )[0],
+                                                        schemaAndTableName.split( "[.]" )[1]
+                                                ),
+                                        indexName -> PostgresIndexesRegister
+                                                .generate( this.getSession() )
+                                                .reIndex( indexName )
+                                );
+                            }
+                        }
+                )
         );
     }
 }

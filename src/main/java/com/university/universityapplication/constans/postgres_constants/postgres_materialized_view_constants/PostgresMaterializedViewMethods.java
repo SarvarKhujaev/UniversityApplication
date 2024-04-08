@@ -102,7 +102,7 @@ public final class PostgresMaterializedViewMethods {
     );
 
     public static final String REFRESH_ALL_MATERIALIZED_VIEWS = """
-            SELECT CONCAT( 'REFRESH', ' MATERIALIZED VIEW ', p.matviewname, ';' ) AS refresh
+            SELECT CONCAT( 'REFRESH', ' %s ', p.matviewname, ';' ) AS refresh
             FROM pg_matviews p
             WHERE schemaname = '%s';
             """;

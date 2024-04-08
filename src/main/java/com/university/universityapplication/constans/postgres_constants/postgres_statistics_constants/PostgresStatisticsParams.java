@@ -470,4 +470,107 @@ public final class PostgresStatisticsParams {
     plane |             1 |            6
     */
     public static final String PG_PREPARED_STATEMENTS = "pg_prepared_statements";
+
+    /*
+    https://postgrespro.ru/docs/postgresql/11/pgstattuple
+    https://habr.com/ru/companies/postgrespro/articles/452320/
+
+    SELECT * FROM pgstattuple( 'tablename' );
+
+    -[ RECORD 1 ]------+---------
+    table_len          | 68272128
+    tuple_count        | 500000
+    tuple_len          | 64500000
+    tuple_percent      | 94.47
+    dead_tuple_count   | 0
+    dead_tuple_len     | 0
+    dead_tuple_percent | 0
+    free_space         | 38776
+    free_percent       | 0.06
+
+    table_len	bigint	Физическая длина отношения в байтах
+    tuple_count	bigint	Количество «живых» кортежей
+    tuple_len	bigint	Общая длина «живых» кортежей в байтах
+    tuple_percent	float8	Процент «живых» кортежей
+    dead_tuple_count	bigint	Количество «мёртвых» кортежей
+    dead_tuple_len	bigint	Общая длина «мёртвых» кортежей в байтах
+    dead_tuple_percent	float8	Процент «мёртвых» кортежей
+    free_space	bigint	Общий объём свободного пространства в байтах
+    free_percent	float8	Процент свободного пространства
+    */
+    public static final String PG_STAT_TUPLE = "pgstattuple";
+
+    /*
+    https://habr.com/ru/companies/postgrespro/articles/452320/
+
+    SELECT * FROM pgstatindex('vac_s');
+
+    version            | 3
+    tree_level         | 3
+    index_size         | 72802304
+    root_block_no      | 2722
+    internal_pages     | 241
+    leaf_pages         | 8645
+    empty_pages        | 0
+    deleted_pages      | 0
+    avg_leaf_density   | 83.77
+    leaf_fragmentation | 64.25
+
+    version	integer	Номер версии B-дерева
+    tree_level	integer	Уровень корневой страницы в дереве
+
+    empty_pages	bigint	Количество пустых страниц
+    index_size	bigint	Общий объём индекса в байтах
+    leaf_pages	bigint	Количество страниц на уровне листьев
+    deleted_pages	bigint	Количество удалённых страниц
+    root_block_no	bigint	Расположение страницы корня (0, если её нет)
+    internal_pages	bigint	Количество «внутренних» страниц (верхнего уровня)
+
+    avg_leaf_density	float8	Средняя плотность страниц на уровне листьев
+    leaf_fragmentation	float8	Фрагментация на уровне листьев
+    */
+    public static final String PG_STAT_INDEX = "pgstatindex";
+
+    /*
+    SELECT * FROM pgstatginindex('test_gin_index');
+
+    version        | 1
+    pending_pages  | 0
+    pending_tuples | 0
+
+    Столбцы результата:
+    Столбец	Тип	Описание
+    version	integer	Номер версии GIN
+    pending_pages	integer	Количество страниц в списке ожидающих обработки
+    pending_tuples	bigint	Количество кортежей в списке ожидающих обработки
+    */
+    public static final String PG_STAT_GIN_INDEX = "pgstatginindex";
+
+    /*
+    Функция pgstathashindex возвращает запись с информацией о хеш-индексе.
+    Например:
+
+    test=> select * from pgstathashindex('con_hash_index');
+    -[ RECORD 1 ]--+-----------------
+    version        | 4
+    bucket_pages   | 33081
+    overflow_pages | 0
+    bitmap_pages   | 1
+    unused_pages   | 32455
+    live_items     | 10204006
+    dead_items     | 0
+    free_percent   | 61.8005949100872
+
+    Столбцы результата:
+    Столбец	Тип	Описание
+    version	integer	Номер версии HASH
+    bucket_pages	bigint	Количество страниц групп
+    overflow_pages	bigint	Количество страниц переполнения
+    bitmap_pages	bigint	Количество страниц битовой карты
+    unused_pages	bigint	Количество неиспользованных страниц
+    live_items	bigint	Количество «живых» кортежей
+    dead_tuples	bigint	Количество «мёртвых» кортежей
+    free_percent	float	Процент свободного пространства
+     */
+    public static final String PG_STAT_HASG_INDEX = "pgstathashindex";
 }

@@ -50,6 +50,6 @@ public final class PostgresBufferMethods {
     public static final String SELECT_BUFFER_ANALYZE_FOR_TABLE = """
             SELECT *
             FROM pg_buffercache
-            WHERE relfilenode = pg_relation_filenode('%s.%s');
+            WHERE relfilenode = pg_relation_filenode('%s');
             """;
 }

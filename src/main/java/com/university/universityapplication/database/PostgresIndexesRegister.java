@@ -58,4 +58,16 @@ public final class PostgresIndexesRegister extends LogInspector {
                 )
         );
     }
+
+    public void reIndex (
+            final String indexName
+    ) {
+        super.logging(
+                this.getSession().createNativeQuery(
+                        PostgresIndexParams.REINDEX.formatted(
+                                indexName
+                        )
+                ).getQueryString()
+        );
+    }
 }

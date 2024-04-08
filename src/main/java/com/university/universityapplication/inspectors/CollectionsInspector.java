@@ -74,6 +74,7 @@ public class CollectionsInspector extends DataValidateInspector {
     protected final List< String > getPostgresExtensions () {
         return List.of(
                 PostgresExtensions.CREATE_EXTENSION_PG_PREWARM,
+                PostgresExtensions.CREATE_EXTENSION_PG_STAT_TUPLE,
                 PostgresExtensions.CREATE_EXTENSION_FOR_BUFFER_READ,
                 PostgresExtensions.CREATE_EXTENSION_PG_STAT_STATEMENTS
         );

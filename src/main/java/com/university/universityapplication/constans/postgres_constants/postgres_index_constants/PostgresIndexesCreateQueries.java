@@ -15,7 +15,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.TEACHERS,
 
-                    PostgresIndexes.GIN,
+                    PostgresIndexes.BTREE,
 
                     "name %s, surname %s, father_name %s".formatted(
                             PostgresIndexParams.ASC,
@@ -51,7 +51,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.STUDENTS,
 
-                    PostgresIndexes.GIN,
+                    PostgresIndexes.BTREE,
 
                     "name %s".formatted(
                             PostgresIndexParams.ASC
@@ -88,7 +88,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.GROUPS,
 
-                    PostgresIndexes.GIN,
+                    PostgresIndexes.BTREE,
 
                     "group_name %s".formatted(
                             PostgresIndexParams.ASC
@@ -122,7 +122,7 @@ public final class PostgresIndexesCreateQueries {
                     PostgreSqlSchema.UNIVERSITY,
                     PostgreSqlTables.LESSONS,
 
-                    PostgresIndexes.GIN,
+                    PostgresIndexes.BTREE,
 
                     "lesson_name %s".formatted(
                             PostgresIndexParams.ASC

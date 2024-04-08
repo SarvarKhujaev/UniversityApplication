@@ -3,6 +3,10 @@ package com.university.universityapplication.interfaces;
 public interface PostgresStatisticsQueryInterface {
     void get_pg_stats();
 
+    void readPgStatTuple ();
+
+    void readPgStatIndex ();
+
     void readCacheStatistics ();
 
     void get_pg_stat_activity ();
