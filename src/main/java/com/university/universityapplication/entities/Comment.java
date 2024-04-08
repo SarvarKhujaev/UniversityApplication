@@ -116,7 +116,7 @@ public final class Comment extends TimeInspector {
     по умолчанию будем ставить высшую оценку
     Интервал оценок 1 - 5
     */
-    private final byte mark = 3;
+    private final byte mark = 5;
 
     @Immutable
     @NotNull( message = ErrorMessages.NULL_VALUE )

@@ -8,6 +8,7 @@ import com.university.universityapplication.interfaces.PostgresStatisticsQueryIn
 import com.university.universityapplication.entities.postgres_stats_entities.PGStats;
 import com.university.universityapplication.inspectors.LogInspector;
 
+import org.hibernate.Transaction;
 import org.hibernate.stat.CacheRegionStatistics;
 import org.hibernate.Session;
 
@@ -138,6 +139,8 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
 
     @Override
     public void readPgStatTuple () {
+        final Transaction transaction = this.getSession().beginTransaction();
+
         super.analyze(
                 PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
                 schemaAndTableName -> super.analyze(
@@ -162,10 +165,15 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
                         }
                 )
         );
+
+        transaction.commit();
+        super.logging( transaction );
     }
 
     @Override
     public void readPgStatIndex () {
+        final Transaction transaction = this.getSession().beginTransaction();
+
         super.analyze(
                 PostgresFunctionsRegister.generate( this.getSession() ).getListOfDbTables(),
                 schemaAndTableName -> super.analyze(
@@ -196,5 +204,8 @@ public final class PostgresStatisticsQueryController extends LogInspector implem
                         }
                 )
         );
+
+        transaction.commit();
+        super.logging( transaction );
     }
 }

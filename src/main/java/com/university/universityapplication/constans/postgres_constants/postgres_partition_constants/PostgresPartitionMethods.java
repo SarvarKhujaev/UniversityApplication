@@ -4,6 +4,8 @@ import com.university.universityapplication.constans.postgres_constants.Postgres
 import com.university.universityapplication.constans.postgres_constants.PostgresCreateValues;
 
 /*
+https://www.postgresql.org/docs/14/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-BEST-PRACTICES
+
 https://rasiksuhail.medium.com/guide-to-postgresql-table-partitioning-c0814b0fbd9b
 
 https://rodoq.medium.com/partition-an-existing-table-on-postgresql-480b84582e8d
@@ -41,6 +43,10 @@ public final class PostgresPartitionMethods {
     FOR VALUES IN ('Electronics');
     */
     public static final String PARTITION_OF = "PARTITION OF";
+
+    public static final String ATTACH = "ATTACH";
+
+    public static final String DETACH = "DETACH";
 
     public static final String CREATE_RANGE_PARTITION_TABLE = String.join(
             " ",
