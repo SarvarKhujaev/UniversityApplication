@@ -14,10 +14,10 @@ public final class PostgresPartitionsRegister extends LogInspector implements Po
         return this.session;
     }
 
-    public static void generate (
+    public static PostgresPartitionsRegister generate (
             final Session session
     ) {
-        new PostgresPartitionsRegister( session );
+        return new PostgresPartitionsRegister( session );
     }
 
     private PostgresPartitionsRegister (
