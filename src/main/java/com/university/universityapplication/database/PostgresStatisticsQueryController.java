@@ -8,8 +8,8 @@ import com.university.universityapplication.interfaces.PostgresStatisticsQueryIn
 import com.university.universityapplication.entities.postgres_stats_entities.PGStats;
 import com.university.universityapplication.inspectors.LogInspector;
 
-import org.hibernate.Transaction;
 import org.hibernate.stat.CacheRegionStatistics;
+import org.hibernate.Transaction;
 import org.hibernate.Session;
 
 /*

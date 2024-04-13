@@ -139,8 +139,6 @@ public final class HibernateConnector extends Archive implements ServiceCommonMe
         /*
         сохраняем временные настройки для сбора статистики
         */
-        this.getSession().setProperty( PostgresStatisticsParams.TRACK_COUNTS, "on" );
-        this.getSession().setProperty( PostgresStatisticsParams.TRACK_IO_TIMING, "on" );
         this.getSession().setProperty( PostgresStatisticsParams.TRACK_FUNCTIONS, "all" );
         this.getSession().setProperty( PostgresStatisticsParams.TRACK_ACTIVITIES, "on" );
     }
