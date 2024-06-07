@@ -1,5 +1,7 @@
 package com.university.universityapplication.inspectors;
 
+import com.university.universityapplication.UniversityApplication;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
@@ -19,5 +21,28 @@ public class DataValidateInspector {
             final T object
     ) {
         return validator.validate( object );
+    }
+
+    /*
+    получает в параметрах название параметра из файла application.yaml
+    проверят что context внутри main класса GpsTabletsServiceApplication  инициализирован
+    и среди параметров сервиса сузествует переданный параметр
+    */
+    protected final synchronized <T> T checkContextOrReturnDefaultValue (
+            final String paramName,
+            final T defaultValue
+    ) {
+        return this.objectIsNotNull( UniversityApplication.context )
+                && this.objectIsNotNull(
+                UniversityApplication
+                        .context
+                        .getEnvironment()
+                        .getProperty( paramName )
+        )
+                ? (T) UniversityApplication
+                .context
+                .getEnvironment()
+                .getProperty( paramName )
+                : defaultValue;
     }
 }

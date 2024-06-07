@@ -19,22 +19,22 @@ public final class HibernateNativeNamedQueries {
     public static final String GET_TEACHER_AVERAGE_MARKS_SETTER = "GET_TEACHER_AVERAGE_MARKS_SETTER";
 
     public static final String GET_TEACHER_AVERAGE_MARKS_QUERY = """
-            SELECT COALESCE( averageMark, 0 ) AS averageMark, lessonCount,
-                CASE
+            SELECT COALESCE( averageMark, 0 ) AS averageMark,
+            lessonCount,
+            CASE
                 WHEN averageMark BETWEEN 0 AND 2 THEN 'horrible'
                 WHEN averageMark BETWEEN 2 AND 3 THEN 'normal'
                 WHEN averageMark BETWEEN 3 AND 4 THEN 'medium'
-                ELSE 'perfect'
-                END averageMarkNaming
+            ELSE 'perfect'
+            END AS averageMarkNaming
             FROM (
                 SELECT avg( c.mark ) AS averageMark, -- средняя оценка занятия
                 COUNT( l.id ) AS lessonCount -- количество занятий которые провел препод
 
                 FROM university.groups g
 
-                INNER JOIN university.lessons l ON l.group_id = g.id -- находим все занятия в этих группах
-
-                INNER JOIN university.comments c ON c.lesson_id = l.id -- находим всe комметарии к этим занятиям
+                INNER JOIN ( university.lessons l INNER JOIN university.comments c ON c.lesson_id = l.id ) -- находим всe комметарии к этим занятиям
+                ON l.group_id = g.id -- находим все занятия в этих группах
 
                 WHERE g.teacher_id = :teacher_id -- находим все группы за которые он отвечает
             );
@@ -55,10 +55,10 @@ public final class HibernateNativeNamedQueries {
             COUNT( s.lesson_appearance_types ) AS lessonsCount, -- общее количество занятий студента сгрупораванные по lesson_appearance_types
             ( SELECT totalLessonsCount FROM studentLessonsCount ),
             CASE
-            WHEN s.lesson_appearance_types = 'IN_TIME' THEN 'пришел вовремя'
-            WHEN s.lesson_appearance_types = 'ABSENT' THEN 'отсутствовал'
+                WHEN s.lesson_appearance_types = 'IN_TIME' THEN 'пришел вовремя'
+                WHEN s.lesson_appearance_types = 'ABSENT' THEN 'отсутствовал'
             ELSE 'опоздал'
-            END studentAppearanceDesc
+            END AS studentAppearanceDesc
             FROM university.STUDENT_APPEARANCE_IN_LESSONS s
             WHERE s.student_id = :student_id AND ( SELECT totalLessonsCount FROM studentLessonsCount ) > 0
             GROUP BY s.lesson_appearance_types;

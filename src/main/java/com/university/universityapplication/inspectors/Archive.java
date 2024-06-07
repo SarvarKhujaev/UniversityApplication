@@ -1,6 +1,5 @@
 package com.university.universityapplication.inspectors;
 
-import com.university.universityapplication.UniversityApplication;
 import org.hibernate.cfg.Environment;
 import java.util.Map;
 
@@ -43,32 +42,25 @@ public class Archive extends LogInspector {
 
         this.dbSettings.put(
                 Environment.URL,
-                super.objectIsNotNull( UniversityApplication.context )
-                        ? UniversityApplication
-                        .context
-                        .getEnvironment()
-                        .getProperty( "variables.HIBERNATE_VALUES.URL" )
-                        : "jdbc:postgresql://localhost:5432/postgres"
+                super.checkContextOrReturnDefaultValue(
+                        "variables.HIBERNATE_VALUES.URL",
+                        "jdbc:postgresql://localhost:5432/postgres"
+                )
         );
 
         this.dbSettings.put(
-                Environment.USER,
-                super.objectIsNotNull( UniversityApplication.context )
-                        ? UniversityApplication
-                        .context
-                        .getEnvironment()
-                        .getProperty( "variables.HIBERNATE_VALUES.USER" )
-                        : "postgres"
+                Environment.USER,super.checkContextOrReturnDefaultValue(
+                        "variables.HIBERNATE_VALUES.USER",
+                        "postgres"
+                )
         );
 
         this.dbSettings.put(
                 Environment.PASS,
-                super.objectIsNotNull( UniversityApplication.context )
-                        ? UniversityApplication
-                        .context
-                        .getEnvironment()
-                        .getProperty( "variables.HIBERNATE_VALUES.PASSWORD" )
-                        : "killerbee"
+                super.checkContextOrReturnDefaultValue(
+                        "variables.HIBERNATE_VALUES.PASSWORD",
+                        "killerbee"
+                )
         );
 
         this.dbSettings.put( Environment.DRIVER, "org.postgresql.Driver" );
