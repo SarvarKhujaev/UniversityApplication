@@ -3,6 +3,8 @@ package com.university.universityapplication.inspectors;
 import java.time.Month;
 
 public class StringOperations extends CollectionsInspector {
+    public final static String SPACE = " ";
+
     protected StringOperations () {}
 
     protected final synchronized String getYearAndMonthConvertedValue (

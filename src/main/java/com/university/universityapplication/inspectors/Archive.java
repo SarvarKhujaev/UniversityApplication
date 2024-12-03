@@ -3,17 +3,19 @@ package com.university.universityapplication.inspectors;
 import org.hibernate.cfg.Environment;
 import java.util.Map;
 
-/*
-CacheMode.NORMAL -> CacheStoreMode.USE and CacheRetrieveMode.USE -> Default. Reads/writes data from/into the cache
+@SuppressWarnings(
+        value = """
+                CacheMode.NORMAL -> CacheStoreMode.USE and CacheRetrieveMode.USE -> Default. Reads/writes data from/into the cache
 
-CacheMode.REFRESH -> CacheStoreMode.REFRESH and CacheRetrieveMode.BYPASS -> Doesn’t read from cache, but writes to the cache upon loading from the database
+                CacheMode.REFRESH -> CacheStoreMode.REFRESH and CacheRetrieveMode.BYPASS -> Doesn’t read from cache, but writes to the cache upon loading from the database
 
-CacheMode.PUT -> CacheStoreMode.USE and CacheRetrieveMode.BYPASS -> Doesn’t read from cache, but writes to the cache as it reads from the database
+                CacheMode.PUT -> CacheStoreMode.USE and CacheRetrieveMode.BYPASS -> Doesn’t read from cache, but writes to the cache as it reads from the database
 
-CacheMode.GET -> CacheStoreMode.BYPASS and CacheRetrieveMode.USE -> Read from the cache, but doesn’t write to cache
+                CacheMode.GET -> CacheStoreMode.BYPASS and CacheRetrieveMode.USE -> Read from the cache, but doesn’t write to cache
 
-CacheMode.IGNORE -> CacheStoreMode.BYPASS and CacheRetrieveMode.BYPASS -> Doesn’t read/write data from/into the cache
-*/
+                CacheMode.IGNORE -> CacheStoreMode.BYPASS and CacheRetrieveMode.BYPASS -> Doesn’t read/write data from/into the cache
+                """
+)
 public class Archive extends LogInspector {
     protected int operationsCount = 0;
     protected final int BATCH_SIZE = 30;
